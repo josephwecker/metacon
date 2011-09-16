@@ -1,19 +1,171 @@
 = metacon
+=== metacontroller
+At the moment a very specialized ruby gem for some justin.tv / twitch.tv
+development work but might be more generalizable later. For controlling a
+complex project repository. (Where controlling = developing, deploying,
+running/supervising, branching, aggregating, etc.)
 
-Description goes here.
+== Description
+=== Context: A random walk through changing your project environment
+(while iterating/working on a single project, using mostly ruby and python as
+examples)
+
+==== Rails, etc.
+Rails (etc.) has the concept of environments - set by the RAILS_ENV environment
+variable. When you set it to development or production etc. it starts up
+servers and consoles differently - different configuration variables and
+initialization scripts etc.
+
+==== rvm, pythonbrew, etc.
+Often one adds a .rvmrc to the root directory to control the ruby version and
+keep the local gem repository pristine (which helps it avoid any conflicts with
+other rails projects etc.). Tools like pythonbrew allow for the same thing with
+python - using environment variables and some easy commands you can have easy
+control over virtualenv for installed python modules and even custom
+non-conflicting versions of python.
+
+==== bundler, pip-requirements, etc.
+A quick way to specify gems / python-modules including specific versions that
+this project depends on. Especially useful when combined with rvm/pythonbrew,
+etc. Usually before you're allowed to run anything like test servers it'll
+check to make sure the environment has the dependencies and tell you to install
+them if not.
+
+
+==== git branches and submodules
+Obviously changing your scm branch very quickly and automatically changes the
+files in your project. Thus you can quickly switch between "topical" branches,
+bug-fix branches, authoritative branches, etc.
+
+Submodules offer an aggregation method for more complex projects that depend on
+separate git repositories. These allow you to:
+  1. Modify the submodule's code at the same time you're iterating on the
+     project that uses it - so especially useful if you want greater
+     modularization of code that you're working on.
+  2. Have your repository/branch "pointing" to a specific commit of the
+     submodule. This gives you a kind of very fine-grained dependency control.
+     You could have a feature branch pointing to a newer commit of a submodule
+     (which could be a local clone of any git repository whether you have
+     "push" access or not) - and thus just by switching branches you're also
+     changing the version of the submodules you're depending on.
+
+==== development vs. server-env:  deployment
+(i.e., capistrano, fabric, etc. etc.)
+
+Deployment is essentially a slightly more complex way of adjusting the project
+for a (sometimes very) different environment... Sometimes very different, yet
+often the most important- the one you're targeting in the first place...
+
+Included here are continuous deployment tools (we use Brigade internally at
+Justin tv, written by Emmett Shear [and modified by several employees]. It
+rocks. One day it will be opensourced) and things as simple as scripts that
+do a git-push to servers and issue a SIGHUP.
+
+==== puppet
+Then there's good ol' puppet. In big systems it's often used to declaratively
+say what software is required on what machines (and it figures out how to get
+them installed in the most appropriate manner for that OS/configuration) and
+sometimes even how to startup and supervise processes on those machines. I have
+to include it here because there's a bunch of stuff that metacon does that we
+have done w/ puppet in the past, plus it's declarative nature is a very, very
+good standard for any similar tools to aspire to. Metacon cannot replace
+puppet- just some stuff that people are sometimes driven to hijack puppet to do
+for them. (that's pretty much true of all tools listed above).
+
+=== Description (finally)
+_metacon_ is for easily organizing and developing any project that may consist
+of multiple:
+ - runtime environments (development/staging/production/testing...)
+ - os environments (mac and linux)
+ - specific-machine environments (server82 vs cluster3)
+ - roles (possibly no one else may need this- when a project can run as
+   different roles / essentially multiple different projects combined into one)
+
+and that needs to be easily developed, integrated, and deployed without
+interuption of existing services.
+
+==== (Aside, Quick redefinition of _environment_)
+Since I keep using the term, when I say "environment" I'm not referring here to
+the normal bash/shell environment. I'm referring specifically to the
+combination above:   runtime-context * os * machine * role
+
+=== (Stated differently): metacon Goals
+==== 1. Develop against the environment union, abstract out divergences
+Develop for the different environment combinations at the same time - with the
+assumption that much of the development is not environment sensitive or that
+the environment-sensitive parts can be factored away. Easily abstract the
+environment stuff away.
+
+==== 2. Easy way to run/iterate in isolated environments.
+
+Keep them ISOLATED - so if you wanted to pristinely run several different
+projects on a server with different needs as far as ruby/python versions and
+packages, binary dependencies, etc., you can (up to a point). Stated another
+way- take the isolation and orthoganality that something like RAILS_ENV /
+.rvmrc provide and extend it pretty much automatically to the following:
+  - Ruby version/build
+  - Ruby gems / packages
+  - Python version/build
+  - Python modules / packages
+  - Anything you can have as a git submodule including but not limited to:
+    - More ruby or python packages that you iterate on or deploy with where the
+      version/branch may change.
+    - Patched or internally developed code that would normally be compiled and
+      installed globally on the target machine.
+    - Other projects that represent loose dependencies that may be getting work
+      done on them orthogonally to this repo (yes, that's mostly a restatement
+      of the last item).
+  - Supervisor processes / running contexts
+Extending it further. So, you may wonder, why not just go "all the way" and
+actually completely change your PATH or segregate by user or even have
+virtual-machines or something? Because, at least with current technologies,
+that would violate goal #1 and goal #3.
+
+==== 3. Fast environment switching
+Very fast switching between the environments and even running certain tasks on
+environments concurrently within the current file and change-set context.  In
+other words, I modify a script and can immediately test it against my "staging"
+and "test" environments for my "responder" role. Switching ideally
+instantaneous, at least after the first time in that environment (when lots of
+downloading / installing needs to happen).
+
+==== RESULTS EXPECTED
+* *Developer Platform Agnosticism*. That is, a large degree of cross-platform
+  commutativity: develop on mac, deploy on linux, etc.
+* *Easy Continual Integration*. Dependency conflicts - even needing a
+  different binary usually installed on the target, is revealed in such a way
+  that is very easy to resolve.
+* *Easy Continual Deployment*. Environmental concerns built in and coded
+  against from the beginning with very little pain. Complex projects that are
+  already huge and complex and in desparate need of continual deployment should
+  be able to migrate to metacon easily and enjoy all the benefits. (This is why
+  we needed it).
+* *Easy Scaling*. At least at the meta level. Application-specific scaling
+  concerns are of course your problem, but at least with metacon it's easy to
+  say "this worker needs to use 4 processors on servers 70 - 94, but only one
+  processor when running on my ancient netbook."
+
+
+* Main goal in the end is *Fast/Agile Development* on complex projects that are
+  aggregates of several projects.
+
 
 == Contributing to metacon
  
-* Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
-* Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it
+* Check out the latest master to make sure the feature hasn't been implemented
+  or the bug hasn't been fixed yet Check out the issue tracker to make sure
+  someone already hasn't requested it and/or contributed it
 * Fork the project
 * Start a feature/bugfix branch
 * Commit and push until you are happy with your contribution
-* Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
-* Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
+* Make sure to add tests for it. This is important so I don't break it in a
+  future version unintentionally.
+* Please try not to mess with the Rakefile, version, or history. If you want to
+  have your own version, or is otherwise necessary, that is fine, but please
+  isolate to its own commit so I can cherry-pick around it.
 
-== Copyright
+== License
 
-Copyright (c) 2011 Joseph Wecker. See LICENSE.txt for
-further details.
-
+MIT License.
+Copyright (c) 2011 Joseph Wecker.
+See LICENSE.txt for further details.

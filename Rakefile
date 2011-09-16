@@ -17,8 +17,8 @@ Jeweler::Tasks.new do |gem|
   gem.name = "metacon"
   gem.homepage = "http://github.com/josephwecker/metacon"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.summary = %Q{Metacontroller for organizing aggregate projects}
+  gem.description = %Q{Tool with some similarities to puppet but specializing in fast development iteration and continuous deployment. For use with justin.tv / twitch.tv project clusters.}
   gem.email = "jwecker@justin.tv"
   gem.authors = ["Joseph Wecker"]
   # dependencies defined in Gemfile
