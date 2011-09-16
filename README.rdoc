@@ -10,7 +10,7 @@ running/supervising, branching, aggregating, etc.)
 (while iterating/working on a single project, using mostly ruby and python as
 examples)
 
-==== -    Rails, etc.
+==== -    rails, etc.
 Rails (etc.) has the concept of environments - set by the RAILS_ENV environment
 variable. When you set it to development or production etc. it starts up
 servers and consoles differently - different configuration variables and
@@ -77,7 +77,8 @@ of multiple:
 and that needs to be easily developed, integrated, and deployed without
 interuption of existing services. Or, stated differently, the goals as follows.
 
-    ==== (Aside, Quick redefinition of _environment_)
+    (Aside, Quick redefinition of 'environment')
+
     Since I keep using the term, when I say "environment" I'm not referring here to
     the normal bash/shell environment. I'm referring specifically to the
     combination above:   runtime-context & os & machine & role
