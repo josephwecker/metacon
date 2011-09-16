@@ -1,5 +1,5 @@
 = metacon
-=== metacontroller
+=== (i.e., metacontroller)
 At the moment a very specialized ruby gem for some justin.tv / twitch.tv
 development work but might be more generalizable later. For controlling a
 complex project repository. (Where controlling = developing, deploying,
@@ -39,15 +39,15 @@ bug-fix branches, authoritative branches, etc.
 
 Submodules offer an aggregation method for more complex projects that depend on
 separate git repositories. These allow you to:
-  1. Modify the submodule's code at the same time you're iterating on the
-     project that uses it - so especially useful if you want greater
-     modularization of code that you're working on.
-  2. Have your repository/branch "pointing" to a specific commit of the
-     submodule. This gives you a kind of very fine-grained dependency control.
-     You could have a feature branch pointing to a newer commit of a submodule
-     (which could be a local clone of any git repository whether you have
-     "push" access or not) - and thus just by switching branches you're also
-     changing the version of the submodules you're depending on.
+1. Modify the submodule's code at the same time you're iterating on the project
+  that uses it - so especially useful if you want greater modularization of
+  code that you're working on.
+2. Have your repository/branch "pointing" to a specific commit of the
+  submodule. This gives you a kind of very fine-grained dependency control.
+  You could have a feature branch pointing to a newer commit of a submodule
+  (which could be a local clone of any git repository whether you have "push"
+  access or not) - and thus just by switching branches you're also changing the
+  version of the submodules you're depending on.
 
 ==== development vs. server-env:  deployment
 (i.e., capistrano, fabric, etc. etc.)
@@ -75,11 +75,11 @@ for them. (that's pretty much true of all tools listed above).
 === Description (finally)
 _metacon_ is for easily organizing and developing any project that may consist
 of multiple:
- - runtime environments (development/staging/production/testing...)
- - os environments (mac and linux)
- - specific-machine environments (server82 vs cluster3)
- - roles (possibly no one else may need this- when a project can run as
-   different roles / essentially multiple different projects combined into one)
+- runtime environments (development/staging/production/testing...)
+- os environments (mac and linux)
+- specific-machine environments (server82 vs cluster3)
+- roles (possibly no one else may need this- when a project can run as
+  different roles / essentially multiple different projects combined into one)
 
 and that needs to be easily developed, integrated, and deployed without
 interuption of existing services.
@@ -103,19 +103,21 @@ projects on a server with different needs as far as ruby/python versions and
 packages, binary dependencies, etc., you can (up to a point). Stated another
 way- take the isolation and orthoganality that something like RAILS_ENV /
 .rvmrc provide and extend it pretty much automatically to the following:
-  - Ruby version/build
-  - Ruby gems / packages
-  - Python version/build
-  - Python modules / packages
-  - Anything you can have as a git submodule including but not limited to:
-    - More ruby or python packages that you iterate on or deploy with where the
-      version/branch may change.
-    - Patched or internally developed code that would normally be compiled and
-      installed globally on the target machine.
-    - Other projects that represent loose dependencies that may be getting work
-      done on them orthogonally to this repo (yes, that's mostly a restatement
-      of the last item).
-  - Supervisor processes / running contexts
+
+- Ruby version/build
+- Ruby gems / packages
+- Python version/build
+- Python modules / packages
+- Anything you can have as a git submodule including but not limited to:
+  - More ruby or python packages that you iterate on or deploy with where the
+    version/branch may change.
+  - Patched or internally developed code that would normally be compiled and
+    installed globally on the target machine.
+  - Other projects that represent loose dependencies that may be getting work
+    done on them orthogonally to this repo (yes, that's mostly a restatement of
+    the last item).
+- Supervisor processes / running contexts
+
 Extending it further. So, you may wonder, why not just go "all the way" and
 actually completely change your PATH or segregate by user or even have
 virtual-machines or something? Because, at least with current technologies,
@@ -130,23 +132,23 @@ instantaneous, at least after the first time in that environment (when lots of
 downloading / installing needs to happen).
 
 ==== RESULTS EXPECTED
-* *Developer Platform Agnosticism*. That is, a large degree of cross-platform
+* *Developer-Platform-Agnosticism*. That is, a large degree of cross-platform
   commutativity: develop on mac, deploy on linux, etc.
-* *Easy Continual Integration*. Dependency conflicts - even needing a
+* *Easy-Continual-Integration*. Dependency conflicts - even needing a
   different binary usually installed on the target, is revealed in such a way
   that is very easy to resolve.
-* *Easy Continual Deployment*. Environmental concerns built in and coded
+* *Easy-Continual-Deployment*. Environmental concerns built in and coded
   against from the beginning with very little pain. Complex projects that are
   already huge and complex and in desparate need of continual deployment should
   be able to migrate to metacon easily and enjoy all the benefits. (This is why
   we needed it).
-* *Easy Scaling*. At least at the meta level. Application-specific scaling
+* *Easy-Scaling*. At least at the meta level. Application-specific scaling
   concerns are of course your problem, but at least with metacon it's easy to
   say "this worker needs to use 4 processors on servers 70 - 94, but only one
   processor when running on my ancient netbook."
 
 
-* Main goal in the end is *Fast/Agile Development* on complex projects that are
+* Main goal in the end is *Fast/Agile-Development* on complex projects that are
   aggregates of several projects.
 
 
