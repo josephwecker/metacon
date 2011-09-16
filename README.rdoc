@@ -10,13 +10,13 @@ running/supervising, branching, aggregating, etc.)
 (while iterating/working on a single project, using mostly ruby and python as
 examples)
 
-==== Rails, etc.
+==== -    Rails, etc.
 Rails (etc.) has the concept of environments - set by the RAILS_ENV environment
 variable. When you set it to development or production etc. it starts up
 servers and consoles differently - different configuration variables and
 initialization scripts etc.
 
-==== rvm, pythonbrew, etc.
+==== -    rvm, pythonbrew, etc.
 Often one adds a .rvmrc to the root directory to control the ruby version and
 keep the local gem repository pristine (which helps it avoid any conflicts with
 other rails projects etc.). Tools like pythonbrew allow for the same thing with
@@ -24,7 +24,7 @@ python - using environment variables and some easy commands you can have easy
 control over virtualenv for installed python modules and even custom
 non-conflicting versions of python.
 
-==== bundler, pip-requirements, etc.
+==== -    bundler, pip-requirements, etc.
 A quick way to specify gems / python-modules including specific versions that
 this project depends on. Especially useful when combined with rvm/pythonbrew,
 etc. Usually before you're allowed to run anything like test servers it'll
@@ -32,24 +32,17 @@ check to make sure the environment has the dependencies and tell you to install
 them if not.
 
 
-==== git branches and submodules
+==== -    git branches and submodules
 Obviously changing your scm branch very quickly and automatically changes the
 files in your project. Thus you can quickly switch between "topical" branches,
 bug-fix branches, authoritative branches, etc.
 
 Submodules offer an aggregation method for more complex projects that depend on
 separate git repositories. These allow you to:
-1. Modify the submodule's code at the same time you're iterating on the project
-  that uses it - so especially useful if you want greater modularization of
-  code that you're working on.
-2. Have your repository/branch "pointing" to a specific commit of the
-  submodule. This gives you a kind of very fine-grained dependency control.
-  You could have a feature branch pointing to a newer commit of a submodule
-  (which could be a local clone of any git repository whether you have "push"
-  access or not) - and thus just by switching branches you're also changing the
-  version of the submodules you're depending on.
+1. Modify the submodule's code at the same time you're iterating on the project that uses it - so especially useful if you want greater modularization of code that you're working on.
+2. Have your repository/branch "pointing" to a specific commit of the submodule. This gives you a kind of very fine-grained dependency control.  You could have a feature branch pointing to a newer commit of a submodule (which could be a local clone of any git repository whether you have "push" access or not) - and thus just by switching branches you're also changing the version of the submodules you're depending on.
 
-==== development vs. server-env:  deployment
+==== -    development vs. server-env:  deployment
 (i.e., capistrano, fabric, etc. etc.)
 
 Deployment is essentially a slightly more complex way of adjusting the project
@@ -61,7 +54,7 @@ Justin tv, written by Emmett Shear [and modified by several employees]. It
 rocks. One day it will be opensourced) and things as simple as scripts that
 do a git-push to servers and issue a SIGHUP.
 
-==== puppet
+==== -    puppet
 Then there's good ol' puppet. In big systems it's often used to declaratively
 say what software is required on what machines (and it figures out how to get
 them installed in the most appropriate manner for that OS/configuration) and
@@ -82,14 +75,13 @@ of multiple:
   different roles / essentially multiple different projects combined into one)
 
 and that needs to be easily developed, integrated, and deployed without
-interuption of existing services.
+interuption of existing services. Or, stated differently, the goals as follows.
 
-==== (Aside, Quick redefinition of _environment_)
-Since I keep using the term, when I say "environment" I'm not referring here to
-the normal bash/shell environment. I'm referring specifically to the
-combination above:   runtime-context * os * machine * role
+    ==== (Aside, Quick redefinition of _environment_)
+    Since I keep using the term, when I say "environment" I'm not referring here to
+    the normal bash/shell environment. I'm referring specifically to the
+    combination above:   runtime-context & os & machine & role
 
-=== (Stated differently): metacon Goals
 ==== 1. Develop against the environment union, abstract out divergences
 Develop for the different environment combinations at the same time - with the
 assumption that much of the development is not environment sensitive or that
