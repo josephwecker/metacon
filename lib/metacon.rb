@@ -1,4 +1,5 @@
 module MetaCon
+  require 'metacon/command'
   VERSION = File.exist?(File.join(File.dirname(__FILE__),'VERSION')) ?
     File.read(File.join(File.dirname(__FILE__),'VERSION')) : ""
 
