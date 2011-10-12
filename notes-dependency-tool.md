@@ -2,7 +2,8 @@
   - git
   - ruby
   - rvm
-  - supervisord (?)
+  - god
+  - supervisord(?)
 (and if there are any python / pip dependencies or subs that need them):
   - python
   - pythonbrew
