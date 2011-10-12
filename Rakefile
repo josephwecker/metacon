@@ -25,6 +25,7 @@ Jeweler::Tasks.new do |gem|
   gem.requirements <<  'rvm, v1.8.2 or greater'
   gem.requirements <<  'pythonbrew, v1.1 or greater'
 
+  gem.post_install_message = "\n\n\e[1;32m\e[40m--- Please run \e[1;37mmetacon-install\e[1;32m to check dependencies & finish the installation --- \e[0m\n\n"
   # dependencies defined in Gemfile
 end
 Jeweler::RubygemsDotOrgTasks.new
