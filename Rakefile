@@ -14,13 +14,17 @@ require 'rake'
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
-  gem.name = "metacon"
-  gem.homepage = "http://github.com/josephwecker/metacon"
-  gem.license = "MIT"
-  gem.summary = %Q{Metacontroller for organizing aggregate projects}
-  gem.description = %Q{Tool with some similarities to puppet but specializing in fast development iteration and continuous deployment. For use with justin.tv / twitch.tv project clusters.}
-  gem.email = "jwecker@justin.tv"
-  gem.authors = ["Joseph Wecker"]
+  gem.name =           'metacon'
+  gem.homepage =       'http://github.com/josephwecker/metacon'
+  gem.license =        'MIT'
+  gem.summary =        %Q{Metacontroller for organizing aggregate projects}
+  gem.description =    %Q{Tool with some similarities to puppet but specializing in fast development iteration and continuous deployment. For use with justin.tv / twitch.tv project clusters.}
+  gem.email =          'jwecker@justin.tv'
+  gem.authors =        ['Joseph Wecker']
+  gem.requirements <<  'git, v1.7.4.1 or greater'
+  gem.requirements <<  'rvm, v1.8.2 or greater'
+  gem.requirements <<  'pythonbrew, v1.1 or greater'
+
   # dependencies defined in Gemfile
 end
 Jeweler::RubygemsDotOrgTasks.new
