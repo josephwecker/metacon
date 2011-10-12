@@ -1,0 +1,24 @@
+    overlord help    # (or -h or --help)
+    overlord version # (or -v or --version)
+
+    overlord setup
+
+    overlord goto gamer_transcode/development
+
+    overlord build
+    overlord rebuild
+    overlord test
+
+
+### Setup
+(was initialize)
+
+
+
+### ". __overlord_helper" in .bashrc
+ - Set up overlord command (function that makes sure it's in the right dir
+   tree)
+ - Set up Autocomplete based on conf
+ - Set up bash prompt
+ - 'cd' monkeypatch to keep things consistent
+

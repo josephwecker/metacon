@@ -1,0 +1,96 @@
+require 'rake/clean'
+require 'rubygems'
+require './helpers/rake_help.rb'
+require 'pp'
+
+task :default => :test
+
+desc "Initialize everything on a new machine"
+task :initialize => [:core_deps, :virtual_envs, :update_submodules]
+
+task :core_deps do
+  status "Checking for pythonbrew"
+  unless command_exists? 'pythonbrew'
+    cmd = ''
+    cfail("pythonbrew not found. Please install via the following bash commands:\n" +
+          "   |{=== curl -kL http://xrl.us/pythonbrewinstall} | |{=== bash}\n" +
+          "   |{=== echo '[[ -s $HOME/.pythonbrew/etc/bashrc ]] && " +
+                         "source $HOME/.pythonbrew/etc/bashrc' >> ~/.bashrc}\n" +
+          "   |{=== source $HOME/.pythonbrew/etc/bashrc}\n" +
+          "or by following instructions at https://github.com/utahta/pythonbrew.")
+  end
+  result 'installed'
+
+  status "Checking for python versions"
+  versions = `pythonbrew list`.split("\n").map{|p| p.strip}
+  unless versions.include?('Python-2.7.2')
+    result "installing isolated/local python 2.7.2"
+    sh 'pythonbrew install --no-test 2.7.2'
+  end
+  result "Python instance ready"
+
+end
+
+task :virtual_envs do
+  status "Creating virtual environments for various workers / environments"
+
+  result "not yet implemented"
+end
+
+desc "Update submodules (initializes if necessary) - run first and often"
+task :update_submodules => [:global_gitignore] do
+  sh "git submodule init"
+  sh "git submodule update"
+end
+
+task :build do
+  puts "build"
+end
+
+task :rebuild do
+  puts "rebuild"
+end
+
+
+task :restart do
+  puts "restart"
+end
+
+task :sync do
+  # Make sure that git doesn't have anything dangling - esp submodule commit
+  # changes or uncommitted submodule changes etc.
+  puts "sync"
+end
+
+task :test do
+  puts "test"
+end
+
+task :info do
+  puts "environment:  ..."
+  puts "worker-type:  ..."
+  puts "..."
+end
+
+
+task :global_gitignore do
+  globalignore = `git config -l | grep core.excludesfile | cut -d= -f2`.strip
+  if globalignore.length == 0 || (! File.exist?(globalignore))
+    color_puts "|{blue Hmm... you don't have a global .gitignore file...}"
+    puts "I'm going to add one for you with a bunch of nice defaults at "+
+         "~/.gitignore. I hope you don't mind...\n\n"
+    sh "git config --global core.excludesfile ~/.gitignore"
+    sh "echo -e \".DS_Store\nThumbs.db\n.*.swp\n.bundle\n*.tmproj\ntmtags\n"+
+       "*~\n\\#*\n.\\#*\n.redcar\n*.rbc\" >> ~/.gitignore"
+    globalignore = `git config -l | grep core.excludesfile | cut -d= -f2`.strip
+  end
+
+  if globalignore.length > 0 && `grep description-pak \"#{globalignore}\"`.strip.length == 0
+    color_puts "|{blue Adding some generated package stuff to your global "+
+               "gitignore so that the submodules don't get messy.}"
+    color_puts "(Can't add to some individual .gitignores because the "+
+               "submodules may not be under our control)"
+    sh "echo \"\\ndescription-pak\\ndoc-pak\\nffmpeg_*.deb\\nx264_*.deb\" >> "+
+       "\"#{globalignore}\""
+  end
+end

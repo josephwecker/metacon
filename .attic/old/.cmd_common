@@ -1,0 +1,44 @@
+#!/bin/bash
+# Just a fancy way to run rake against exactly the right Rakefile, with a
+# default WORKER_ENV always of development, and more easily pass in
+# command-line parameters to the task, etc. Meant to be symlinked to.
+#
+# ex:
+# $  do-something production blah
+# (becomes, more or less)
+# $  WORKER_ENV=production rake do-something[blah]
+
+set -e # Exit on error
+#------------------------------------------------------------------------------
+# Make sure we know exactly where the real script is so we can run from
+# anywhere. (follows sym-links etc.)
+SCRIPT_PATH="${BASH_SOURCE[0]}";
+if [ -h "${SCRIPT_PATH}" ]; then
+  while([ -h "${SCRIPT_PATH}" ]) do
+    if [[ `uname -s` == 'Darwin' ]]; then
+      SCRIPT_PATH=`readlink "${SCRIPT_PATH}"`
+    else
+      SCRIPT_PATH=`readlink -f "${SCRIPT_PATH}"`
+    fi
+  done
+fi
+pushd . > /dev/null
+cd `dirname ${SCRIPT_PATH}` > /dev/null
+SCRIPT_PATH=`pwd`;
+popd  > /dev/null
+#------------------------------------------------------------------------------
+
+RAKEFILE="${SCRIPT_PATH}/Rakefile" # Explicit to this Rakefile
+
+pushd . > /dev/null   # Save cwd & go to that rakefile's directory
+cd "${SCRIPT_PATH}"
+
+task=`basename ${BASH_SOURCE[0]}`
+if [[ "$#" > 0 ]]; then
+  worker_env=$1
+  shift
+else
+  worker_env=development
+fi
+WORKER_ENV=$worker_env rake --nosearch -f "${RAKEFILE}" ${task}[$@]
+popd > /dev/null    # Restore old cwd
