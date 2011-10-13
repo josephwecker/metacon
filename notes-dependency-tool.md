@@ -1,17 +1,16 @@
-# Meta-dependencies (depended on by metacon)
-  - git
-  - ruby
-  - rvm
-  - god
-  - supervisord(?)
-(and if there are any python / pip dependencies or subs that need them):
-  - python
-  - pythonbrew
+# Tool stack
 
-(Perhaps only installed lazily as needed by the conf options?)
-(also something inserted into .bashrc etc. for autocompletion and ps1
-alterations)
-
+ * sanity-test
+ * pre-deploy-build
+   * pre-deploy-rebuild
+ * sync
+ * build
+   * rebuild
+ * test
+ * start
+   * restart
+   * hard-restart
+ * stop
 
 # Installation type
 ## 1. general

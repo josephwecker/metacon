@@ -1,19 +1,6 @@
-
-
-# Installation
- (gem -> basic libraries used by commands)
- (installer -> 
- - Basic install-script (similar to rvm installation procedure)
- - Install/ensure dependencies
-   - git
-   - rvm
-   - god
-   - pythonbrew
- - Install shell shim
-
 # Components
 ## General Commandline
- - Figure out how to load various dependency tools?
+
 ## Commands
  - st / stat  -> environment + versions of dependencies, state of submodules,
    current git state, running state, etc.
@@ -35,7 +22,7 @@
  - Allow a ~/.metacon-config for filling in general things not specified in
    project directory.
  - project.config > home.config > default.config
- - Make sure there is general (sane) config stuff for supervisord
+ - Make sure there is general (sane) config stuff for basic ruby-god stuff
 
 ## Shell Prompt (PS1) for Bash/ZSH
 
