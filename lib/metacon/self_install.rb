@@ -8,12 +8,15 @@ module MetaCon
 
     def check_install
       exit 2 unless check_git
-      result('Looks good')
+      result 'Looks good'
+
       exit 3 unless check_rvm
-      result('Looks good')
+      result 'Looks good'
+
       exit 4 unless check_pythonbrew
-      result('Looks good')
-      install_shim
+      result 'Looks good'
+
+      install_shelp
     end
 
     def check_git
@@ -34,9 +37,16 @@ module MetaCon
                         'https://github.com/utahta/pythonbrew/blob/master/README.rst')
     end
 
-    def install_shim
-
+    def install_shelp
+      status "Checking shell helper functionality"
+      
+      shelp = File.join(File.dirname(__FILE__), '..','..', 'shelp','metacon.bashrc')
+      if File.exists?(shelp)
+        result "Not yet implemented- you're good to go"
+      else
+        cfail "Couldn't find shell helper files (metacon.bashrc) - installation broken somehow..."
+        exit 5
+      end
     end
-
   end
 end

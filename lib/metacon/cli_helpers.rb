@@ -46,7 +46,7 @@ module MetaCon
       return str
     end
 
-    def cwarn(str) color_puts("---|{red Warning:} #{str}") end
+    def cwarn(str) color_puts("---|{brown Warning:} #{str}") end
     def cfail(str) color_puts("---|{red Fail:} #{str}") end
 
     def status(str) color_puts("\n---|{== #{str}}") end
