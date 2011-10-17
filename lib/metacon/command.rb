@@ -1,10 +1,14 @@
 module MetaCon
   class Command
     require 'optparse'
+    require 'metacon/init'
+    COMMANDS = {:init => {:opt_args => ['directory'],
+                          :desc => 'Initialize metacon project dir (default ./), creates if necessary',
+                          :handler => MetaCon::Init}}
     def self.run
       banner = "metacon\n"+
                "MetaController version #{MetaCon::VERSION}\n" +
-               "Usage: metacon [command] [options]"
+               "Usage: metacon [COMMAND] [OPTIONS]"
       options = {}
       opts = OptionParser.new do |o|
         o.version = MetaCon.version
@@ -18,16 +22,25 @@ module MetaCon
         o.separator ''
         o.separator 'commands          '
         o.separator '------------------'
-        o.separator commands.map{|c,p| "#{c.to_s.ljust(15)}#{p[:desc]}"}
+        cmds = COMMANDS.map do |c,p|
+          opt_args = p[:opt_args].map{|oa| "[#{oa.upcase}]"}.join(' ')
+          "#{(c.to_s + ' ' + opt_args).ljust(36)} #{p[:desc]}"
+        end
+        o.separator cmds
       end
+      rest = opts.parse(ARGV)
 
-      files = opts.parse(ARGV)
-    end
-
-    def self.commands
-      [[:init, {:desc=>'Initialize ./ or specified directory as a metacon directory, creating it if necessary.',
-                 :opt_arg=>'[DIRECTORY]'}]
-      ]
+      if rest.size == 0
+        puts opts
+        exit
+      end
+      command_key = rest.shift.strip.downcase
+      command = COMMANDS[command_key.to_sym]
+      if command.nil?
+        $stderr.puts "Command #{command_key} not found. Use -h to see the list of commands."
+        exit 2
+      end
+      command[:handler].send :handle, rest
     end
   end
 end

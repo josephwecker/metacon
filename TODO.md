@@ -2,6 +2,8 @@
 ## General Commandline
 
 ## Commands
+ - init
+
  - st / stat  -> environment + versions of dependencies, state of submodules,
    current git state, running state, etc.
  - env     [-l[ist] || new\_env]
@@ -27,5 +29,10 @@
 ## Shell Prompt (PS1) for Bash/ZSH
 
 ## Autocomplete
+
+
+
+## Context Changes
+ * 
 
 
