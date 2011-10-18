@@ -5,6 +5,7 @@ module MetaCon
     require 'highline'
     require 'metacon/init'
     require 'metacon/stat'
+    require 'metacon/switch'
     include MetaCon::CLIHelpers
     CMD_ALIASES = {
       :st => :stat,
@@ -15,7 +16,11 @@ module MetaCon
       :curr => :curr,
       :current => :curr,
       :init => :init,
-      :initialize => :init
+      :initialize => :init,
+      :role => :role,
+      :context => :runctx,
+      :ctx => :runctx,
+      :runcontext => :runctx
     }
     COMMANDS = {:init => {:opt_args => ['directory'],
                           :desc => 'Init metacon project dir, default ./, create if necessary',
@@ -23,9 +28,21 @@ module MetaCon
                 :stat => {:opt_args => ['stat-name'],
                           :desc => 'Status of / information about the current context',
                           :handler => MetaCon::Stat},
-                :curr => {:opt_args => [],
-                          :desc => 'Display current context',
-                          :handler => MetaCon::Stat}
+                :curr => {:opt_args => ['kind'],
+                          :desc => 'Display current metacontext (or specified part)',
+                          :handler => MetaCon::Stat},
+                :role => {:opt_args => ['-list', 'switch-to'],
+                          :desc => 'Show current role, list available roles, or switch.',
+                          :handler => MetaCon::Switch},
+                :rctx => {:opt_args => ['-list', 'switch-to'],
+                          :desc => 'Show current run-context, list available, or switch.',
+                          :handler => MetaCon::Switch},
+                :os =>   {:opt_args => ['-list', 'switch-to'],
+                          :desc => 'Show current OS, list available, or try to switch.',
+                          :handler => MetaCon::Switch},
+                :machine=>{:opt_args => ['-list', 'switch-to'],
+                           :desc => 'Show current machine, list defined, or try to switch.',
+                           :handler => MetaCon::Switch}
                }
     def self.run
       banner = "metacon\n"+

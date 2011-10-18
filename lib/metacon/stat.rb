@@ -9,7 +9,8 @@ module MetaCon
     end
 
     def self.stat(cli, opts)
-
+      puts '(not yet implemented)'
+      curr(cli, opts)
     end
 
     def self.curr(cli, opts)
