@@ -1,7 +1,7 @@
 module MetaCon
   class Project
     require 'metacon/config'
-    attr_accessor :mc_dir, :rel_dir, :root_dir
+    attr_accessor :mc_dir, :rel_dir, :root_dir, :valid
     def self.initialized?(relative_to='./')
       ! find_mc_dir(relative_to).nil?
     end
@@ -9,13 +9,22 @@ module MetaCon
     def initialize(relative_to='./')
       @rel_dir = File.expand_path(relative_to)
       @mc_dir = Project.find_mc_dir(@rel_dir)
-      @root_dir = File.expand_path(File.join(@mc_dir, '..'))
       if @mc_dir.nil?
+        @root_dir = nil
         @valid = false
+        @state = nil
       else
+        @root_dir = File.expand_path(File.join(@mc_dir, '..'))
         @valid = true
         @state = SavedState.new(@mc_dir)
       end
+    end
+
+    def this_os; `uname -s`.strip.downcase end
+    def this_machine; `uname -n`.strip end
+
+    def different_os?
+
     end
 
     def defined_roles
@@ -28,6 +37,12 @@ module MetaCon
       return nil unless @valid
       refresh_conf
       @conf.declared[:runctx].keys
+    end
+
+    def atomic(&block)
+      @state.atomic do |s|
+        yield self, s
+      end
     end
 
     def switch(changes={})
@@ -50,6 +65,13 @@ module MetaCon
     def can_switch?
       # TODO: make sure submodules don't have stuff to stash etc.
       return true
+    end
+
+    def current_state
+      st = @state.readonly
+      st[:os] = this_os if (st[:os] == '(this)' || st[:os] == '.')
+      st[:machine] = this_machine if (st[:machine] == '(this)' || st[:machine] == '.')
+      return st
     end
 
     protected
@@ -99,7 +121,6 @@ module MetaCon
 
     def atomic(&block)
       @in_atomic = true
-      @dirty = false
       `touch #{@fstate}` # Guarantee exists and change timestamps
       File.open(@fstate,'r+') do |f|
         f.flock File::LOCK_EX
@@ -112,7 +133,14 @@ module MetaCon
           f.truncate(f.pos)
         end
       end
+      @dirty = false
       @in_atomic = false
+    end
+
+    def readonly
+      res = YAML::load_file(@fstate)
+      res ||= blank_initial_state
+      return res
     end
 
     def [](key)

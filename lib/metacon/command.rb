@@ -6,9 +6,27 @@ module MetaCon
     require 'metacon/init'
     require 'metacon/stat'
     include MetaCon::CLIHelpers
+    CMD_ALIASES = {
+      :st => :stat,
+      :stat => :stat,
+      :status => :stat,
+      :statistics => :stat,
+      :c => :curr,
+      :curr => :curr,
+      :current => :curr,
+      :init => :init,
+      :initialize => :init
+    }
     COMMANDS = {:init => {:opt_args => ['directory'],
-                          :desc => 'Initialize metacon project dir (default ./), creates if necessary',
-                          :handler => MetaCon::Init}               }
+                          :desc => 'Init metacon project dir, default ./, create if necessary',
+                          :handler => MetaCon::Init},
+                :stat => {:opt_args => ['stat-name'],
+                          :desc => 'Status of / information about the current context',
+                          :handler => MetaCon::Stat},
+                :curr => {:opt_args => [],
+                          :desc => 'Display current context',
+                          :handler => MetaCon::Stat}
+               }
     def self.run
       banner = "metacon\n"+
                "MetaController version #{MetaCon::VERSION}\n" +
@@ -39,13 +57,15 @@ module MetaCon
         exit
       end
       command_key = rest.shift.strip.downcase
-      command = COMMANDS[command_key.to_sym]
+      command = CMD_ALIASES[command_key.to_sym]
+
       if command.nil?
         cfail "Command #{command_key} not found. Use -h to see the list of commands."
         exit 2
       end
       cli = HighLine.new
-      command[:handler].send :handle, cli, command_key.to_sym, rest
+      command_info = COMMANDS[command]
+      command_info[:handler].send :handle, cli, command, rest
     end
   end
 end
