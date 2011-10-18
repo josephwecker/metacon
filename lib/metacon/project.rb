@@ -21,22 +21,10 @@ module MetaCon
     end
 
     def this_os; `uname -s`.strip.downcase end
-    def this_machine; `uname -n`.strip end
+    def this_host; `uname -n`.strip end
 
     def different_os?
 
-    end
-
-    def defined_roles
-      return nil unless @valid
-      refresh_conf
-      @conf.declared[:role].keys
-    end
-
-    def defined_contexts
-      return nil unless @valid
-      refresh_conf
-      @conf.declared[:runctx].keys
     end
 
     def atomic(&block)
@@ -53,7 +41,7 @@ module MetaCon
         changes.each do |key, val|
           s[key] = val unless s[key] == val
         end
-        changed = ! s.dirty
+        changed = s.dirty
       end
       if changed
         return setup_context
@@ -70,8 +58,15 @@ module MetaCon
     def current_state
       st = @state.readonly
       st[:os] = this_os if (st[:os] == '(this)' || st[:os] == '.')
-      st[:machine] = this_machine if (st[:machine] == '(this)' || st[:machine] == '.')
+      st[:host] = this_host if (st[:host] == '(this)' || st[:host] == '.')
       return st
+    end
+
+    def list(to_list)
+      return nil unless @valid
+      refresh_conf
+      cs = current_state
+      @conf.declared[to_list].keys | [cs[to_list]]
     end
 
     protected
@@ -114,9 +109,9 @@ module MetaCon
     def blank_initial_state
       @dirty = true
       {:role => 'main',
-       :runctx => 'dev',
+       :rtc => 'dev',
        :os => '(this)',
-       :machine => '(this)'}
+       :host => '(this)'}
     end
 
     def atomic(&block)

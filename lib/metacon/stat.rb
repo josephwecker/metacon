@@ -1,25 +1,24 @@
 module MetaCon
   class Stat
-    include MetaCon::CLIHelpers
-    def self.handle(cli, cmd, opts)
+    def self.handle(cmd, opts)
       case cmd
-      when :stat; stat(cli, opts)
-      when :curr; curr(cli, opts)
+      when :stat; stat(opts)
+      when :curr; puts curr(opts)
       end
     end
 
-    def self.stat(cli, opts)
+    def self.stat(opts)
       puts '(not yet implemented)'
-      curr(cli, opts)
+      puts curr(opts)
     end
 
-    def self.curr(cli, opts)
-      proj = MetaCon::Project.new
-      cfail 'Not a metacon project. Use `metacon init`' and exit(5) unless proj.valid
+    def self.curr(opts=[], proj=nil)
+      proj ||= $proj
+      $cli.cfail 'Not a metacon project. Use `metacon init`' and exit(5) unless proj.valid
       state = proj.current_state
       os = state[:os] == proj.this_os ? '.' : state[:os]
-      machine = state[:machine] == proj.this_machine ? '.' : state[:machine]
-      puts "/#{state[:runctx]}/#{state[:role]}/#{os}/#{machine}/"
+      host = state[:host] == proj.this_host ? '.' : state[:host]
+      return "/#{state[:rtc]}/#{state[:role]}/#{os}/#{host}/"
     end
   end
 end

@@ -8,42 +8,54 @@ module MetaCon
     require 'metacon/switch'
     include MetaCon::CLIHelpers
     CMD_ALIASES = {
-      :st => :stat,
-      :stat => :stat,
-      :status => :stat,
-      :statistics => :stat,
-      :c => :curr,
-      :curr => :curr,
-      :current => :curr,
-      :init => :init,
+      :init =>       :init,
       :initialize => :init,
-      :role => :role,
-      :context => :runctx,
-      :ctx => :runctx,
-      :runcontext => :runctx
+
+      :st =>         :stat,
+      :stat =>       :stat,
+      :status =>     :stat,
+      :statistics => :stat,
+
+      :c =>          :curr,
+      :curr =>       :curr,
+      :current =>    :curr,
+
+      :role =>       :role,
+
+      :rtc =>        :rtc,
+      :rctx =>       :rtc,
+      :runtime =>    :rtc,
+      :runtimecontext => :rtc,
+
+      :os =>         :os,
+      :operatingsystem => :os,
+
+      :host =>       :host,
+      :machine =>    :host,
+      :computer =>   :host,
+      :server =>     :host
     }
-    COMMANDS = {:init => {:opt_args => ['directory'],
+    COMMANDS = [[:init, {:args => ['[DIRECTORY]'],
                           :desc => 'Init metacon project dir, default ./, create if necessary',
-                          :handler => MetaCon::Init},
-                :stat => {:opt_args => ['stat-name'],
+                          :handler => MetaCon::Init}],
+                [:stat, {:args => ['[STAT-NAME]'],
                           :desc => 'Status of / information about the current context',
-                          :handler => MetaCon::Stat},
-                :curr => {:opt_args => ['kind'],
+                          :handler => MetaCon::Stat}],
+                [:curr, {:args => ['[KIND]'],
                           :desc => 'Display current metacontext (or specified part)',
-                          :handler => MetaCon::Stat},
-                :role => {:opt_args => ['-list', 'switch-to'],
-                          :desc => 'Show current role, list available roles, or switch.',
-                          :handler => MetaCon::Switch},
-                :rctx => {:opt_args => ['-list', 'switch-to'],
-                          :desc => 'Show current run-context, list available, or switch.',
-                          :handler => MetaCon::Switch},
-                :os =>   {:opt_args => ['-list', 'switch-to'],
-                          :desc => 'Show current OS, list available, or try to switch.',
-                          :handler => MetaCon::Switch},
-                :machine=>{:opt_args => ['-list', 'switch-to'],
-                           :desc => 'Show current machine, list defined, or try to switch.',
-                           :handler => MetaCon::Switch}
-               }
+                          :handler => MetaCon::Stat}],
+                [:role, {:args => ['[SWITCH-TO]'],
+                          :desc => 'Show current role in list, or switch to new.',
+                          :handler => MetaCon::Switch}],
+                [:rtc,  {:args => ['[SWITCH-TO]'],
+                          :desc => 'Show current runtime-context in list, or switch to new.',
+                          :handler => MetaCon::Switch}],
+                [:os,   {:args => ['[SWITCH-TO]'],
+                          :desc => 'Show current OS in list, or try to switch to new.',
+                          :handler => MetaCon::Switch}],
+                [:host, {:args => ['[SWITCH-TO]'],
+                         :desc => 'Show current host/machine in list, or try to switch to new.',
+                         :handler => MetaCon::Switch}]]
     def self.run
       banner = "metacon\n"+
                "MetaController version #{MetaCon::VERSION}\n" +
@@ -62,8 +74,8 @@ module MetaCon
         o.separator 'commands          '
         o.separator '------------------'
         cmds = COMMANDS.map do |c,p|
-          opt_args = p[:opt_args].map{|oa| "[#{oa.upcase}]"}.join(' ')
-          "#{(c.to_s + ' ' + opt_args).ljust(36)} #{p[:desc]}"
+          args = p[:args].join(' ')
+          "#{(c.to_s + ' ' + args).ljust(36)} #{p[:desc]}"
         end
         o.separator cmds
       end
@@ -80,9 +92,15 @@ module MetaCon
         cfail "Command #{command_key} not found. Use -h to see the list of commands."
         exit 2
       end
-      cli = HighLine.new
-      command_info = COMMANDS[command]
-      command_info[:handler].send :handle, cli, command, rest
+      $cli = HighLine.new
+      $cli.extend(MetaCon::CLIHelpers)
+      unless command == :init
+        $proj = MetaCon::Project.new
+        $cli.cfail 'Not a metacon project. Use `metacon init`' and exit(5) unless $proj.valid
+      end
+
+      command_info = COMMANDS.select{|k,v| k == command}[0][1]
+      command_info[:handler].send :handle, command, rest
     end
   end
 end

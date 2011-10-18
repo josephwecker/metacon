@@ -5,7 +5,7 @@ module MetaCon
       require 'yaml'
       conf_files = Dir[root + '/**/*.mconf']
       @data = {}
-      @declared = {:runctx=>{}, :role=>{}, :os=>{}, :machine=>{}}
+      @declared = {:rtc=>{}, :role=>{}, :os=>{}, :host=>{}}
       conf_files.each{|cf| update_with(cf) }
     end
 
@@ -19,11 +19,11 @@ module MetaCon
     def update_group(default_family, key, content)
       if key.start_with? '/'
         # TODO: Actually parse these- negative namespaces, regex, etc.
-        runctx, role, os, machine = key.split('/').map{|v| v.strip}[1..-1]
-        @declared[:runctx][runctx] = true unless runctx == '*'
+        rtc, role, os, host = key.split('/').map{|v| v.strip}[1..-1]
+        @declared[:rtc][rtc] = true unless rtc == '*'
         @declared[:role][role] = true unless role == '*'
         @declared[:os][os] = true unless os == '*'
-        @declared[:machine][machine] = true unless machine == '*'
+        @declared[:host][host] = true unless host == '*'
         # TODO: populate data
       elsif content.is_a?(Hash)
         content.each{|k,v| update_group(key,k,v) }

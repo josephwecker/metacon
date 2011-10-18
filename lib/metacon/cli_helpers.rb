@@ -46,6 +46,7 @@ module MetaCon
       puts str if emit
       return str
     end
+    alias :cputs :color_puts
 
     def cwarn(str) color_puts("|{brown Warning:} #{str}") end
     def cfail(str) color_puts("|{red Fail:} #{str}") end
