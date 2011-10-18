@@ -5,6 +5,20 @@ development work but might be more generalizable later. For controlling a
 complex project repository. (Where controlling = developing, deploying,
 running/supervising, branching, aggregating, etc.)
 
+== Commands
+
+== Configs
+=== Standard families / families w/ special functionality
+==== dependencies
+Define the overall dependencies for meta-environments
+==== osenv
+Sets up misc. os (bash) environment variables for meta-environments (probably
+won't be able to guarantee they're set except in specific run contexts)
+
+==== deployment
+
+==== runtime
+
 == Description
 === Context: A random walk through changing your project environment
 (while iterating/working on a single project, using mostly ruby and python as

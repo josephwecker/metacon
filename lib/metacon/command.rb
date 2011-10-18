@@ -1,6 +1,7 @@
 module MetaCon
   class Command
     require 'optparse'
+    require 'highline'
     require 'metacon/init'
     COMMANDS = {:init => {:opt_args => ['directory'],
                           :desc => 'Initialize metacon project dir (default ./), creates if necessary',
@@ -40,7 +41,8 @@ module MetaCon
         $stderr.puts "Command #{command_key} not found. Use -h to see the list of commands."
         exit 2
       end
-      command[:handler].send :handle, rest
+      cli = HighLine.new
+      command[:handler].send :handle, cli, rest
     end
   end
 end

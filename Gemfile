@@ -1,5 +1,6 @@
 source "http://rubygems.org"
 gem "god", "~> 0.11.0"
+gem "highline", "~> 1.6.2"
 
 # Development dependencies
 # Including everything needed to run rake, tests, features, etc.
