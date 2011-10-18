@@ -2,6 +2,7 @@ class String; def as_version; MetaCon::CLIHelpers::SymVer.new(self) end end
 
 module MetaCon
   module CLIHelpers
+    def included(by); by.extend(self) end
 
     class SymVer
       include Comparable
@@ -46,11 +47,11 @@ module MetaCon
       return str
     end
 
-    def cwarn(str) color_puts("---|{brown Warning:} #{str}") end
-    def cfail(str) color_puts("---|{red Fail:} #{str}") end
+    def cwarn(str) color_puts("|{brown Warning:} #{str}") end
+    def cfail(str) color_puts("|{red Fail:} #{str}") end
 
-    def status(str) color_puts("\n---|{== #{str}}") end
-    def result(str) color_puts("   |{green #{str}}\n") end
+    def status(str) color_puts("\n|{== #{str}}") end
+    def result(str) color_puts(" |{green #{str}}\n") end
 
     def fj(*args) File.expand_path(File.join(args)) end # Shortcut for File.join
 
@@ -105,6 +106,7 @@ module MetaCon
       return prof[0] unless prof.size == 0
       return nil
     end
+    extend self
   end
 end
 

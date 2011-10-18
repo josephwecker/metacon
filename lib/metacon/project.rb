@@ -21,21 +21,39 @@ module MetaCon
     def defined_roles
       return nil unless @valid
       refresh_conf
-      #@conf.roles
+      @conf.declared[:role].keys
     end
 
     def defined_contexts
       return nil unless @valid
       refresh_conf
+      @conf.declared[:runctx].keys
     end
 
     def switch(changes={})
-      return true if changes=={}
+      return :nochange if changes=={}
+      return :impossible unless can_switch?
+      changed = false
+      @state.atomic do |s|
+        changes.each do |key, val|
+          s[key] = val unless s[key] == val
+        end
+        changed = ! s.dirty
+      end
+      if changed
+        return setup_context
+      else
+        return :nochange
+      end
+    end
 
-      return false
+    def can_switch?
+      # TODO: make sure submodules don't have stuff to stash etc.
+      return true
     end
 
     protected
+
     def self.find_mc_dir(relative_to='./')
       d = relative_to.dup
       while ! File.directory?(File.join(d,'.metacon'))
@@ -45,15 +63,68 @@ module MetaCon
       return File.join(d,'.metacon')
     end
 
-    def refresh_conf
-      @conf = Config.new(@root_dir)
+    def refresh_conf; @conf = Config.new(@root_dir) end
+
+    def setup_context
+      # Dependencies loaded in for:
+      # - ruby
+      # - gems
+      # - python
+      # - pips
+      # - submodules
+      # - (general tools)
+      # Use different classes for each to encourage adding more
+
+      return :switched
     end
   end
 
   class SavedState
+    require 'yaml'
+    attr_accessor :dirty
     def initialize(mcdir)
       raise "#{mcdir} not found" unless File.directory?(mcdir)
       @fstate = File.join(mcdir,'current_state')
+      @in_atomic = @dirty = false
+    end
+
+    def blank_initial_state
+      @dirty = true
+      {:role => 'main',
+       :runctx => 'dev',
+       :os => '(this)',
+       :machine => '(this)'}
+    end
+
+    def atomic(&block)
+      @in_atomic = true
+      @dirty = false
+      `touch #{@fstate}` # Guarantee exists and change timestamps
+      File.open(@fstate,'r+') do |f|
+        f.flock File::LOCK_EX
+        @state = YAML::load(f.read)
+        @state ||= blank_initial_state
+        yield self
+        if @dirty
+          f.pos = 0
+          f.print @state.to_yaml
+          f.truncate(f.pos)
+        end
+      end
+      @in_atomic = false
+    end
+
+    def [](key)
+      if @in_atomic
+        @state[key]
+      end
+    end
+
+    def []=(key,val)
+      if @in_atomic
+        @state[key] = val
+        @dirty = true
+      end
     end
   end
 end

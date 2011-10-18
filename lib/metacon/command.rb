@@ -1,11 +1,14 @@
 module MetaCon
   class Command
     require 'optparse'
+    require 'metacon/cli_helpers'
     require 'highline'
     require 'metacon/init'
+    require 'metacon/stat'
+    include MetaCon::CLIHelpers
     COMMANDS = {:init => {:opt_args => ['directory'],
                           :desc => 'Initialize metacon project dir (default ./), creates if necessary',
-                          :handler => MetaCon::Init}}
+                          :handler => MetaCon::Init}               }
     def self.run
       banner = "metacon\n"+
                "MetaController version #{MetaCon::VERSION}\n" +
@@ -38,11 +41,11 @@ module MetaCon
       command_key = rest.shift.strip.downcase
       command = COMMANDS[command_key.to_sym]
       if command.nil?
-        $stderr.puts "Command #{command_key} not found. Use -h to see the list of commands."
+        cfail "Command #{command_key} not found. Use -h to see the list of commands."
         exit 2
       end
       cli = HighLine.new
-      command[:handler].send :handle, cli, rest
+      command[:handler].send :handle, cli, command_key.to_sym, rest
     end
   end
 end
