@@ -69,6 +69,7 @@ module MetaCon
       # Dependencies loaded in for:
       # - ruby
       # - gems
+      # - bundler Gemfiles
       # - python
       # - pips
       # - submodules
