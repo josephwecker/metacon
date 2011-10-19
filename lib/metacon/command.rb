@@ -1,3 +1,7 @@
+
+# TODO:
+#  - "up" / "refresh" - something to redo dependencies etc. etc. as if context
+#    had just changed.
 module MetaCon
   class Command
     require 'optparse'
