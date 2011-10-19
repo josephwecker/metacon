@@ -8,6 +8,15 @@ module MetaCon
       ! find_mc_dir(relative_to).nil?
     end
 
+    def uid
+      if @uid.nil?
+        require 'digest/sha1'
+        key = self.this_host + @state[:role] + @state[:rtc] + @state[:host] + @state[:os]
+        @uid = Digest::SHA1.hexdigest(key)[0..5]
+      end
+      @uid
+    end
+
     def initialize(relative_to='./')
       @rel_dir = File.expand_path(relative_to)
       @mc_dir = Project.find_mc_dir(@rel_dir)
@@ -19,33 +28,24 @@ module MetaCon
         @root_dir = File.expand_path(File.join(@mc_dir, '..'))
         @valid = true
         @state = SavedState.new(@mc_dir)
+        refresh_conf
       end
     end
 
-    def conf_obj
-      refresh_conf if @config.nil?
-      @config
+    def conf_obj; @config end
+    def conf; @config[current_state] end
+
+    def this_os
+      @@this_os ||= `uname -s`.strip.downcase
+      @@this_os
     end
 
-    def conf
-      refresh_conf if @config.nil?
-      @config[current_state]
+    def this_host
+      @this_host ||= `uname -n`.strip
+      @this_host
     end
 
-    def this_os; `uname -s`.strip.downcase end
-    def this_host; `uname -n`.strip end
-
-    def different_os?
-
-    end
-
-    def atomic(&block)
-      @state.atomic do |s|
-        yield self, s
-      end
-    end
-
-    def switch(changes={})
+    def switch(verbose=false,changes={})
       return :nochange if changes=={}
       return :impossible unless can_switch?
       changed = false
@@ -56,7 +56,7 @@ module MetaCon
         changed = s.dirty
       end
       if changed
-        return setup_context
+        return setup_context(verbose)
       else
         return :nochange
       end
@@ -76,7 +76,6 @@ module MetaCon
 
     def list(to_list)
       return nil unless @valid
-      refresh_conf
       cs = current_state
       @config.declared[to_list].keys | [cs[to_list]]
     end
@@ -115,11 +114,12 @@ module MetaCon
 
   class SavedState
     require 'yaml'
-    attr_accessor :dirty
+    attr_accessor :dirty, :state
     def initialize(mcdir)
       raise "#{mcdir} not found" unless File.directory?(mcdir)
       @fstate = File.join(mcdir,'current_state')
       @in_atomic = @dirty = false
+      @state = nil
     end
 
     def blank_initial_state
@@ -161,6 +161,10 @@ module MetaCon
     def [](key)
       if @in_atomic
         @state[key]
+      elsif @state.nil?
+        @state = readonly
+      else
+        @state[key]
       end
     end
 
@@ -168,6 +172,10 @@ module MetaCon
       if @in_atomic
         @state[key] = val
         @dirty = true
+      else
+        atomic do |s|
+          s[key] = val
+        end
       end
     end
   end

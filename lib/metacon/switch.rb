@@ -12,7 +12,7 @@ module MetaCon
           end
         end
       else
-        res = $proj.switch({cmd=>opts[0]})
+        res = $proj.switch(true, {cmd=>opts[0]})
         case res
         when :nochange
           $cli.cwarn 'Nothing changed'
