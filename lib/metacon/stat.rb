@@ -3,7 +3,7 @@ module MetaCon
     def self.handle(cmd, opts)
       case cmd
       when :stat; stat(opts)
-      when :curr; puts curr(opts)
+      when :curr; curr(opts)
       end
     end
 
@@ -18,7 +18,12 @@ module MetaCon
       state = proj.current_state
       os = state[:os] == proj.this_os ? '.' : state[:os]
       host = state[:host] == proj.this_host ? '.' : state[:host]
-      return "/#{state[:rtc]}/#{state[:role]}/#{os}/#{host}/"
+      if opts.size == 0
+        puts "/#{state[:rtc]}/#{state[:role]}/#{os}/#{host}/"
+      else
+        # TODO: check for valid types
+        opts.each{|o| puts state[o.to_sym]}
+      end
     end
   end
 end

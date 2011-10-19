@@ -21,7 +21,7 @@ module MetaCon
         when :impossible
           $cli.cfail 'Cannot switch. Probably because submodules need committing.'
         end
-        puts MetaCon::Stat.curr
+        MetaCon::Stat.curr
       end
     end
   end
