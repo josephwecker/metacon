@@ -1,6 +1,8 @@
 module MetaCon
   class Project
     require 'metacon/config'
+    require 'metacon/loaders/index'
+    include MetaCon::Loaders::Index
     attr_accessor :mc_dir, :rel_dir, :root_dir, :valid
     def self.initialized?(relative_to='./')
       ! find_mc_dir(relative_to).nil?
@@ -92,18 +94,22 @@ module MetaCon
 
     def refresh_conf; @config = Config.new(@root_dir) end
 
-    def setup_context
-      # Dependencies loaded in for:
-      # - ruby
-      # - gems
-      # - bundler Gemfiles
-      # - python
-      # - pips
-      # - submodules
-      # - (general tools)
-      # Use different classes for each to encourage adding more
-
-      return :switched
+    def setup_context(verbose=false)
+      dependencies = self.conf['dependencies']
+      incomplete = false
+      dependencies.each do |dep|
+        dep = dep.split('/').map{|part| part.strip}
+        kind = dep[0].downcase
+        loader = LOADERS[kind]
+        if loader.nil?
+          $stderr.puts "WARNING: Don't know how to work with '#{kind}' dependencies." if verbose
+          incomplete = true
+        else
+          loader.ensure(dep, @state.state, self)
+        end
+      end
+      return incomplete ? :incomplete : :switched
+      # TODO: Handle :incomplete in calling modules
     end
   end
 
