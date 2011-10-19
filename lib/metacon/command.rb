@@ -33,7 +33,11 @@ module MetaCon
       :host =>       :host,
       :machine =>    :host,
       :computer =>   :host,
-      :server =>     :host
+      :server =>     :host,
+
+      :conf =>       :conf,
+      :config =>     :conf,
+      :configuration=> :conf
     }
     COMMANDS = [[:init, {:args => ['[DIRECTORY]'],
                           :desc => 'Init metacon project dir, default ./, create if necessary',
@@ -55,7 +59,10 @@ module MetaCon
                           :handler => MetaCon::Switch}],
                 [:host, {:args => ['[SWITCH-TO]'],
                          :desc => 'Show current host/machine in list, or try to switch to new.',
-                         :handler => MetaCon::Switch}]]
+                         :handler => MetaCon::Switch}],
+                [:conf, {:args => ['[FAMILY]'],
+                         :desc => 'Output the currently applicable configuration',
+                         :handler => MetaCon::Command}] ]
     def self.run
       banner = "metacon\n"+
                "MetaController version #{MetaCon::VERSION}\n" +
@@ -101,6 +108,14 @@ module MetaCon
 
       command_info = COMMANDS.select{|k,v| k == command}[0][1]
       command_info[:handler].send :handle, command, rest
+    end
+
+    def self.handle(cmd,opts)
+      if cmd == :conf
+        conf = $proj.conf
+        conf = Hash[opts.map{|fam| [fam, conf[fam]]}] if opts.size > 0
+        puts conf.to_yaml
+      end
     end
   end
 end

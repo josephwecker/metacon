@@ -20,6 +20,16 @@ module MetaCon
       end
     end
 
+    def conf_obj
+      refresh_conf if @config.nil?
+      @config
+    end
+
+    def conf
+      refresh_conf if @config.nil?
+      @config[current_state]
+    end
+
     def this_os; `uname -s`.strip.downcase end
     def this_host; `uname -n`.strip end
 
@@ -66,7 +76,7 @@ module MetaCon
       return nil unless @valid
       refresh_conf
       cs = current_state
-      @conf.declared[to_list].keys | [cs[to_list]]
+      @config.declared[to_list].keys | [cs[to_list]]
     end
 
     protected
@@ -80,7 +90,7 @@ module MetaCon
       return File.join(d,'.metacon')
     end
 
-    def refresh_conf; @conf = Config.new(@root_dir) end
+    def refresh_conf; @config = Config.new(@root_dir) end
 
     def setup_context
       # Dependencies loaded in for:
