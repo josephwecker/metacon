@@ -1,9 +1,24 @@
-#!/usr/bin/env ruby
-require 'rubygems'
-libdir = File.join(File.dirname(__FILE__), '..', 'lib')
-if File.exists?(File.join(libdir,'metacon.rb'))
-  $LOAD_PATH.unshift(libdir)
-end
-require 'metacon'
+#!/usr/bin/env bash
+# Essentially just a wrapper around metacon_unwrapped that makes sure it uses
+# the correct ruby version + gemset. Most of the code here is just to make sure
+# we can find metacon_unwrapped. (we <3 you bash)
 
-MetaCon::Command.run
+set -e # Exit on error
+# Make sure we know exactly where the real script is so we can run from
+# anywhere. (follows sym-links etc.)
+SCRIPT_PATH="${BASH_SOURCE[0]}";
+if [ -h "${SCRIPT_PATH}" ]; then
+  while([ -h "${SCRIPT_PATH}" ]) do
+    if [[ `uname -s` == 'Darwin' ]]; then
+      SCRIPT_PATH=`readlink "${SCRIPT_PATH}"`
+    else
+      SCRIPT_PATH=`readlink -f "${SCRIPT_PATH}"`
+    fi
+  done
+fi
+pushd . > /dev/null
+cd `dirname ${SCRIPT_PATH}` > /dev/null
+SCRIPT_PATH=`pwd`;
+popd  > /dev/null
+
+rvm ruby-1.9.2@metacon exec "${SCRIPT_PATH}/metacon_unwrapped" $@

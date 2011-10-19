@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+libdir = File.join(File.dirname(__FILE__), '..', 'lib')
+if File.exists?(File.join(libdir,'metacon.rb'))
+  $LOAD_PATH.unshift(libdir)
+end
+require 'metacon'
+
+MetaCon::Command.run
