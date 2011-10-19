@@ -143,8 +143,12 @@ module MetaCon
     end
 
     def readonly
-      res = YAML::load_file(@fstate)
-      res ||= blank_initial_state
+      if File.exists?(@fstate)
+        res = YAML::load_file(@fstate)
+        res ||= blank_initial_state
+      else
+        res = blank_initial_state
+      end
       return res
     end
 
