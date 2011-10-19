@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{metacon}
-  s.version = "0.0.1"
+  s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Joseph Wecker"]
-  s.date = %q{2011-10-12}
+  s.date = %q{2011-10-18}
   s.description = %q{Tool with some similarities to puppet but specializing in fast development iteration and continuous deployment. Specifically initially for use with justin.tv / twitch.tv project clusters.}
   s.email = %q{jwecker@justin.tv}
   s.executables = ["metacon-install", "metacon"]
@@ -46,7 +46,13 @@ Gem::Specification.new do |s|
     "lib/metacon.rb",
     "lib/metacon/cli_helpers.rb",
     "lib/metacon/command.rb",
+    "lib/metacon/config.rb",
+    "lib/metacon/init.rb",
+    "lib/metacon/project.rb",
     "lib/metacon/self_install.rb",
+    "lib/metacon/stat.rb",
+    "lib/metacon/switch.rb",
+    "metacon.gemspec",
     "notes-dependency-tool.md",
     "notes.rdoc",
     "shelp/metacon.bashrc",
@@ -70,6 +76,7 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<god>, ["~> 0.11.0"])
+      s.add_runtime_dependency(%q<highline>, ["~> 1.6.2"])
       s.add_development_dependency(%q<minitest>, [">= 0"])
       s.add_development_dependency(%q<yard>, ["~> 0.6.0"])
       s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
@@ -77,6 +84,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rcov>, [">= 0"])
     else
       s.add_dependency(%q<god>, ["~> 0.11.0"])
+      s.add_dependency(%q<highline>, ["~> 1.6.2"])
       s.add_dependency(%q<minitest>, [">= 0"])
       s.add_dependency(%q<yard>, ["~> 0.6.0"])
       s.add_dependency(%q<bundler>, ["~> 1.0.0"])
@@ -85,6 +93,7 @@ Gem::Specification.new do |s|
     end
   else
     s.add_dependency(%q<god>, ["~> 0.11.0"])
+    s.add_dependency(%q<highline>, ["~> 1.6.2"])
     s.add_dependency(%q<minitest>, [">= 0"])
     s.add_dependency(%q<yard>, ["~> 0.6.0"])
     s.add_dependency(%q<bundler>, ["~> 1.0.0"])
