@@ -57,6 +57,7 @@ module MetaCon
         changed = s.dirty
       end
       if changed
+        # TODO: pass in --shell flag
         return setup_context(verbose)
       else
         return :nochange
@@ -95,6 +96,7 @@ module MetaCon
     def refresh_conf; @config = Config.new(@root_dir) end
 
     def setup_context(verbose=false)
+      # TODO: pass through --shell flag
       dependencies = self.conf['dependencies']
       incomplete = false
       dependencies.each do |dep|

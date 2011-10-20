@@ -1,3 +1,16 @@
+
+# TODO: if the --shell flag is sent in, essentially do the following:
+#       * Use rvm info to figure out the correct root directory
+#       * Find .rvm/environments/... for the currently selected ruby+gemset
+#       * Compare actual $PATH to what it would need to change to so that we
+#         don't keep prepending to PATH and growing it needlessly on every
+#         switch.
+#       * Create replacement 'export path' stmt
+#       * Take all stmts and concatenate w/ ';' and shell escape where
+#         appropriate (esp. newlines at least)
+#       * Prepend full string w/ 'bash: ' so that it gets evalled in the
+#         current context.
+#       * Enjoy!
 module MetaCon
   module Loaders
     class RVM
