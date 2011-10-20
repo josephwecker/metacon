@@ -1,26 +1,13 @@
-#!/usr/bin/env bash
-# Essentially just a wrapper around metacon_unwrapped that makes sure it uses
-# the correct ruby version + gemset. Most of the code here is just to make sure
-# we can find metacon_unwrapped. (we <3 you bash)
+#!/usr/bin/env ruby
+# Essentially just a wrapper around .metacon_unwrapped that makes sure it uses
+# the correct ruby version + gemset.
 
-set -e # Exit on error
-# Make sure we know exactly where the real script is so we can run from
-# anywhere. (follows sym-links etc.)
-SCRIPT_PATH="${BASH_SOURCE[0]}";
-if [ -h "${SCRIPT_PATH}" ]; then
-  while([ -h "${SCRIPT_PATH}" ]) do
-    if [[ `uname -s` == 'Darwin' ]]; then
-      SCRIPT_PATH=`readlink "${SCRIPT_PATH}"`
-    else
-      SCRIPT_PATH=`readlink -f "${SCRIPT_PATH}"`
-    fi
-  done
-fi
-pushd . > /dev/null
-cd `dirname ${SCRIPT_PATH}` > /dev/null
-SCRIPT_PATH=`pwd`;
-popd  > /dev/null
-
-
-. "$HOME/.rvm/scripts/rvm" # Just in case not set up in bash_profile etc. yet
-rvm ruby-1.9.2@metacon exec "${SCRIPT_PATH}/.metacon_unwrapped" $@
+rvm_path = File.expand_path("~/.rvm/scripts/rvm")
+if File.exists?(rvm_path)
+  require 'shellwords'
+  cmd = Shellwords.shellescape(File.join(File.dirname(__FILE__), '.metacon_unwrapped'))
+  full_cmd = '. "$HOME/.rvm/scripts/rvm" && rvm ruby-1.9.2@metacon exec ' + cmd + ' ' + ARGV.map{|a| Shellwords.shellescape(a)}.join(' ')
+  exec full_cmd
+else
+  $stderr.puts "RVM is required to run metacon. To finish installation of metacon please run metacon-installer"
+end
