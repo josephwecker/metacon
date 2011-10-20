@@ -1,6 +1,7 @@
 module MetaCon
   module Loaders
     class RVM
+      require 'metacon/loaders/helpers'
       include MetaCon::Loaders::Helpers
       include MetaCon::CLIHelpers
       def self.ensure(dep, state, proj, v=true)
