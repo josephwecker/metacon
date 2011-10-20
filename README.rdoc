@@ -5,6 +5,21 @@ development work but might be more generalizable later. For controlling a
 complex project repository. (Where controlling = developing, deploying,
 running/supervising, branching, aggregating, etc.)
 
+== Install
+
+Prerequisites:
+  * git
+  * curl
+
+The overall tool can be installed as follows:
+
+  $   bash < <(curl -s https://raw.github.com/josephwecker/metacon/master/shelp/metacon-installer.sh )
+
+The library can be used from within a project with a separate:
+
+  $   gem install metacon
+
+
 == Commands
 
 == Configs
