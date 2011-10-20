@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
-# NOTE: make sure not to show role in prompt if no role differentiation is
-# used.
+# TODO: make sure not to show role in prompt if no role differentiation is used.
 
-echo 'hello'
+mcon(){
+  # Essentially just let metacon do its thing but then do in the current
+  # context anything it tells us to do (such as setting environment variables)
+  eval `metacon -s $@ | grep '^:bash' | cut -d' ' -f2-`
+}

@@ -81,6 +81,10 @@ module MetaCon
         o.on('-h','--help', 'Show this message'){puts o; exit 0}
         o.on('--version', 'Show version and exit'){puts MetaCon::VERSION; exit 0}
 
+        o.on('-s', '--[no-]shell-output', 'Outputs commands for evaluating in the current shell') do |v|
+          options[:shell]=v
+        end
+
         o.separator ''
         o.separator 'commands          '
         o.separator '------------------'
@@ -91,6 +95,11 @@ module MetaCon
         o.separator cmds
       end
       rest = opts.parse(ARGV)
+
+      if options[:shell]
+        puts ':bash export TESTMC=gotit'
+        exit 0
+      end
 
       if rest.size == 0
         puts opts
