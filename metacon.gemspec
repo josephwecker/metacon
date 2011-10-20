@@ -4,20 +4,21 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{metacon}
-  s.version = "0.1.0"
+  s.name = "metacon"
+  s.version = "0.1.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Joseph Wecker"]
-  s.date = %q{2011-10-18}
-  s.description = %q{Tool with some similarities to puppet but specializing in fast development iteration and continuous deployment. Specifically initially for use with justin.tv / twitch.tv project clusters.}
-  s.email = %q{jwecker@justin.tv}
-  s.executables = ["metacon-install", "metacon"]
+  s.date = "2011-10-20"
+  s.description = "Tool with some similarities to puppet but specializing in fast development iteration and continuous deployment. Specifically initially for use with justin.tv / twitch.tv project clusters."
+  s.email = "jwecker@justin.tv"
+  s.executables = [".metacon_unwrapped", "metacon", "metacon-installer"]
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.rdoc"
   ]
   s.files = [
+    ".attic/metacon-install",
     ".attic/old/.cmd_common",
     ".attic/old/Gemfile",
     ".attic/old/Gemfile.lock",
@@ -40,14 +41,18 @@ Gem::Specification.new do |s|
     "Rakefile",
     "TODO.md",
     "VERSION",
+    "bin/.metacon_unwrapped",
     "bin/metacon",
-    "bin/metacon-install",
+    "bin/metacon-installer",
     "lib/VERSION",
     "lib/metacon.rb",
     "lib/metacon/cli_helpers.rb",
     "lib/metacon/command.rb",
     "lib/metacon/config.rb",
     "lib/metacon/init.rb",
+    "lib/metacon/loaders/helpers.rb",
+    "lib/metacon/loaders/index.rb",
+    "lib/metacon/loaders/rvm.rb",
     "lib/metacon/project.rb",
     "lib/metacon/self_install.rb",
     "lib/metacon/stat.rb",
@@ -55,21 +60,18 @@ Gem::Specification.new do |s|
     "metacon.gemspec",
     "notes-dependency-tool.md",
     "notes.rdoc",
+    "shelp/metacon-installer.sh",
     "shelp/metacon.bashrc",
     "test/helper.rb",
     "test/test_metacon.rb"
   ]
-  s.homepage = %q{http://github.com/josephwecker/metacon}
+  s.homepage = "http://github.com/josephwecker/metacon"
   s.licenses = ["MIT"]
-  s.post_install_message = %q{
-
-[1;32m[40m--- Please run [1;37mmetacon-install[1;32m to check dependencies & finish the installation --- [0m
-
-}
+  s.post_install_message = "\n\n\e[1;32m\e[40m--- You may need to run \e[1;37mmetacon-installer\e[1;32m to check dependencies & finish the installation --- \e[0m\n\n"
   s.require_paths = ["lib"]
   s.requirements = ["git, v1.7.4.1 or greater", "rvm, v1.8.2 or greater", "pythonbrew, v1.1 or greater"]
-  s.rubygems_version = %q{1.6.2}
-  s.summary = %q{Metacontroller for organizing aggregate projects}
+  s.rubygems_version = "1.8.10"
+  s.summary = "Metacontroller for organizing aggregate projects"
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
