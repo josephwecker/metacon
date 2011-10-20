@@ -28,16 +28,18 @@ else
   INSTALLED_RVM=
 fi
 
-. "$HOME/.rvm/scripts/rvm"
+source "$HOME/.rvm/scripts/rvm"
+set +e
+rvm use $MCON_RUBY_V || ( rvm install $MCON_RUBY_V && rvm use $MCON_RUBY_V ) || exit 3
+echo `rvm current`
+rvm gemset use metacon || ( rvm gemset create metacon && rvm gemset use metacon ) || exit 3
+rvm --force gemset empty metacon || exit 3
+echo `rvm current`
 
-rvm use $MCON_RUBY_V || ( rvm install $MCON_RUBY_V && rvm use $MCON_RUBY_V )
-rvm gemset use metacon || ( rvm gemset create metacon && rvm gemset use metacon )
-rvm gemset empty metacon
-
-GEMOUT=`mktemp`
-gem install metacon > $GEMOUT
-
-DIRNAME=`grep 'Successfully installed ' $GEMOUT | cut -d' ' -f3`
+set -e
+GEMOUT=`mktemp /tmp/metacon.XXXXXX`
+gem install metacon | tee $GEMOUT
+DIRNAME=`grep 'Successfully installed metacon-' $GEMOUT | cut -d' ' -f3`
 unlink $GEMOUT
 
 rm -f /usr/local/bin/metacon /usr/local/bin/.metacon_unwrapped
