@@ -76,7 +76,7 @@ module MetaCon
         o.version = MetaCon.version
         o.banner = banner
         o.separator ''
-        o.on('-v', '--[no-]verbose', 'Run command verbosely'){|v| options[:verbose]=v}
+        o.on('-q', '--[no-]quiet', 'Run command quietly'){|v| options[:verbose]= !v}
 
         o.on('-h','--help', 'Show this message'){puts o; exit 0}
         o.on('--version', 'Show version and exit'){puts MetaCon::VERSION; exit 0}
@@ -95,35 +95,36 @@ module MetaCon
         o.separator cmds
       end
       rest = opts.parse(ARGV)
-
-      if options[:shell]
-        puts ':bash export TESTMC=gotit'
-        exit 0
-      end
+      options[:verbose] = true if options[:verbose].nil?
+      options[:shell] = false if options[:shell].nil?
 
       if rest.size == 0
-        puts opts
+        puts(opts)
         exit
       end
+
       command_key = rest.shift.strip.downcase
       command = CMD_ALIASES[command_key.to_sym]
-
       if command.nil?
         cfail "Command #{command_key} not found. Use -h to see the list of commands."
         exit 2
       end
+
       $cli = HighLine.new
       $cli.extend(MetaCon::CLIHelpers)
       unless command == :init
-        $proj = MetaCon::Project.new
-        $cli.cfail 'Not a metacon project. Use `metacon init`' and exit(5) unless $proj.valid
+        $proj = MetaCon::Project.new('./', options[:verbose])
+        unless $proj.valid
+          $cli.cfail 'Not a metacon project. Use `metacon init`'
+          exit 5
+        end
       end
 
       command_info = COMMANDS.select{|k,v| k == command}[0][1]
-      command_info[:handler].send :handle, command, rest
+      command_info[:handler].send :handle, command, options, rest
     end
 
-    def self.handle(cmd,opts)
+    def self.handle(cmd,clo,opts)
       if cmd == :conf
         conf = $proj.conf
         conf = Hash[opts.map{|fam| [fam, conf[fam]]}] if opts.size > 0

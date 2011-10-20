@@ -1,7 +1,7 @@
 module MetaCon
   class Init
     require 'fileutils'
-    def self.handle(_cmd, opts)
+    def self.handle(_cmd, clo, opts)
       dir = opts.shift
       dir ||= './'
       # Find out if different roles are specified. If none- default to primary.
@@ -23,8 +23,8 @@ module MetaCon
       end
       FileUtils.mkdir(mcd)
 
-      $cli.status "Initializing..."
-      mcp = MetaCon::Project.new(mcd)
+      $cli.status "Initializing..." if clo[:verbose]
+      mcp = MetaCon::Project.new(mcd, clo[:verbose])
 
       init_role = mcp.list(:role)[0] || 'main'
       init_rtc  = mcp.list(:rtc)[0] || 'dev'
@@ -33,7 +33,7 @@ module MetaCon
         $cli.cfail 'Cannot initialize the metacontext- submodules need to have files committed.'
         exit 4
       end
-      $cli.result "\"#{dir}\" is now a metacon project"
+      $cli.result "\"#{dir}\" is now a metacon project" if clo[:verbose]
     end
   end
 end

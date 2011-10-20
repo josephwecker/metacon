@@ -17,7 +17,8 @@ module MetaCon
       @uid
     end
 
-    def initialize(relative_to='./')
+    def initialize(relative_to='./', verbose=true)
+      @verbose = verbose
       @rel_dir = File.expand_path(relative_to)
       @mc_dir = Project.find_mc_dir(@rel_dir)
       if @mc_dir.nil?

@@ -1,6 +1,6 @@
 module MetaCon
   class Switch
-    def self.handle(cmd, opts)
+    def self.handle(cmd, clo, opts)
       if opts.nil? or opts.size == 0
         all = $proj.list(cmd)
         current = $proj.current_state[cmd]
