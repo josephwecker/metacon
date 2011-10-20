@@ -21,4 +21,6 @@ cd `dirname ${SCRIPT_PATH}` > /dev/null
 SCRIPT_PATH=`pwd`;
 popd  > /dev/null
 
-rvm ruby-1.9.2@metacon exec "${SCRIPT_PATH}/metacon_unwrapped" $@
+
+. "$HOME/.rvm/scripts/rvm" # Just in case not set up in bash_profile etc. yet
+rvm ruby-1.9.2@metacon exec "${SCRIPT_PATH}/.metacon_unwrapped" $@
