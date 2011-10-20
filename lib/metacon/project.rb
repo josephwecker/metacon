@@ -46,7 +46,10 @@ module MetaCon
       @this_host
     end
 
-    def switch(verbose=false,changes={})
+    # Options that it cares about:
+    #   - :verbose   true/false
+    #   - :shell     true/false
+    def switch(changes={},opts={})
       return :nochange if changes=={}
       return :impossible unless can_switch?
       changed = false
@@ -57,8 +60,7 @@ module MetaCon
         changed = s.dirty
       end
       if changed
-        # TODO: pass in --shell flag
-        return setup_context(verbose)
+        return setup_context(opts)
       else
         return :nochange
       end
@@ -95,23 +97,25 @@ module MetaCon
 
     def refresh_conf; @config = Config.new(@root_dir) end
 
-    def setup_context(verbose=false)
-      # TODO: pass through --shell flag
+    def setup_context(opts)
       dependencies = self.conf['dependencies']
       incomplete = false
       dependencies.each do |dep|
+        orig_dep = dep.dup
         dep = dep.split('/').map{|part| part.strip}
         kind = dep[0].downcase
         loader = LOADERS[kind]
         if loader.nil?
-          $stderr.puts "WARNING: Don't know how to work with '#{kind}' dependencies." if verbose
+          $stderr.puts "WARNING: Don't know how to work with '#{kind}' dependencies." if opts[:verbose]
           incomplete = true
         else
-          loader.ensure(dep, @state.state, self)
+          unless loader.load_dependency(dep, @state.state, self, opts)
+            $stderr.puts "ERROR: Failed to load #{orig_dep} - continuing anyway"
+            incomplete = true
+          end
         end
       end
       return incomplete ? :incomplete : :switched
-      # TODO: Handle :incomplete in calling modules
     end
   end
 

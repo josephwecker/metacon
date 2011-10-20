@@ -12,12 +12,15 @@ module MetaCon
           end
         end
       else
-        res = $proj.switch(true, {cmd=>opts[0]})
+        res = $proj.switch({cmd=>opts[0]}, clo)
         case res
         when :nochange
-          $cli.cwarn 'Nothing changed'
+          $cli.cwarn 'Nothing changed' if clo[:verbose]
         when :switched
-          $cli.result "Switched #{cmd} to '#{opts[0]}'"
+          $cli.result "Switched #{cmd} to '#{opts[0]}'" if clo[:verbose]
+        when :incomplete
+          $cli.cwarn "Not all dependencies loaded."
+          $cli.result "Switched #{cmd} to '#{opts[0]}' more or less." if clo[:verbose]
         when :impossible
           $cli.cfail 'Cannot switch. Probably because submodules need committing.'
         end
