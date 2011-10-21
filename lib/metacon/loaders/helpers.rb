@@ -2,11 +2,12 @@ module MetaCon
   module Loaders
     module Helpers
       def included(by); by.extend(self) end
-      def cmd(cmd_string, echo=true)
+      def shcmd(cmd_string, echo=true)
         require 'open3'
         main_out = ''
         err_out = ''
         exit_status = 1
+        $stout.puts(cmd_string) if echo
         Open3.popen3('/usr/bin/env bash -s') do |stdin, stdout, stderr, wth|
           stdin.puts cmd_string
           stdin.flush
