@@ -30,11 +30,12 @@ fi
 
 source "$HOME/.rvm/scripts/rvm"
 set +e
-rvm use $MCON_RUBY_V || ( rvm install $MCON_RUBY_V && rvm use $MCON_RUBY_V ) || exit 3
-echo `rvm current`
-rvm gemset use metacon || ( rvm gemset create metacon && rvm gemset use metacon ) || exit 3
+[[ `rvm use $MCON_RUBY_V` == *Using* ]] || ( rvm install $MCON_RUBY_V && rvm use $MCON_RUBY_V ) || exit 3
+rvm use $MCON_RUBY_V
+[[ `rvm use $MCON_RUBY_V; rvm gemset use metacon 2>&1` == *ERROR* ]] && ( ( rvm use $MCON_RUBY_V && rvm gemset create metacon && rvm gemset use metacon ) || exit 3 )
+rvm gemset use metacon
+rvm current
 rvm --force gemset empty metacon || exit 3
-echo `rvm current`
 
 set -e
 GEMOUT=`mktemp /tmp/metacon.XXXXXX`
