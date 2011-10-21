@@ -95,14 +95,18 @@ module MetaCon
     def setup_context(opts)
       dependencies = self.conf['dependencies']
       incomplete = false
+      emitted = {}
       dependencies.each do |dep|
         orig_dep = dep.dup
         dep = dep.split('/').map{|part| part.strip}
         kind = dep[0].downcase
         loader = LOADERS[kind]
         if loader.nil?
-          $stderr.puts "WARNING: Don't know how to work with '#{kind}' dependencies." if opts[:verbose]
-          incomplete = true
+          unless emitted[kind]
+            $stderr.puts "WARNING: Don't know how to work with '#{kind}' dependencies." if opts[:verbose]
+            emitted[kind] = true
+            incomplete = true
+          end
         else
           unless loader.load_dependency(dep, @state.state, self, opts)
             $stderr.puts "ERROR: Failed to load #{orig_dep} - continuing anyway"
