@@ -95,8 +95,8 @@ module MetaCon
         o.separator cmds
       end
       rest = opts.parse(ARGV)
-      options[:verbose] = true if options[:verbose].nil?
       options[:shell] = false if options[:shell].nil?
+      options[:verbose] = true if options[:verbose].nil?
 
       if rest.size == 0
         puts(opts)
