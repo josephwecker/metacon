@@ -39,7 +39,7 @@ rvm --force gemset empty metacon || exit 3
 
 set -e
 GEMOUT=`mktemp /tmp/metacon.XXXXXX`
-gem install metacon | tee $GEMOUT
+gem install metacon | grep -v metacon-installer | grep -v "^$" | tee $GEMOUT
 DIRNAME=`grep 'Successfully installed metacon-' $GEMOUT | cut -d' ' -f3`
 unlink $GEMOUT
 
