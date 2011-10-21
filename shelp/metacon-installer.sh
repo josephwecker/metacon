@@ -42,9 +42,13 @@ GEMOUT=`mktemp /tmp/metacon.XXXXXX`
 gem install metacon | grep -v metacon-installer | grep -v "^$" | tee $GEMOUT
 DIRNAME=`grep 'Successfully installed metacon-' $GEMOUT | cut -d' ' -f3`
 unlink $GEMOUT
+TMPGEMDIR=`rvm gemdir`
 
-rm -f /usr/local/bin/metacon /usr/local/bin/.metacon_unwrapped
-ln -s `rvm gemdir`/gems/${DIRNAME}/bin/metacon /usr/local/bin/metacon
+set +e
+rm -f /usr/local/bin/metacon &> /dev/null || sudo rm -f /usr/local/bin/metacon
+ln -s ${TMPGEMDIR}/gems/${DIRNAME}/bin/metacon /usr/local/bin/metacon &> /dev/null || \
+  sudo ln -s ${TMPGEMDIR}/gems/${DIRNAME}/bin/metacon /usr/local/bin/metacon
+set -e
 
 if [ $INSTALLED_RVM ]; then
 	echo "To finish installing RVM you need to add the following to your .bashrc (or .bash_profile etc.) - then restart the shell."
