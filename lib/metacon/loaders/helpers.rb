@@ -7,7 +7,7 @@ module MetaCon
         main_out = ''
         err_out = ''
         exit_status = 1
-        $stout.puts(cmd_string) if echo
+        $stdout.puts(cmd_string) if echo
         Open3.popen3('/usr/bin/env bash -s') do |stdin, stdout, stderr, wth|
           stdin.puts cmd_string
           stdin.flush
