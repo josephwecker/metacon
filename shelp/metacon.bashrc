@@ -4,5 +4,8 @@
 mcon(){
   # Essentially just let metacon do its thing but then do in the current
   # context anything it tells us to do (such as setting environment variables)
-  eval `metacon -s $@ | grep '^:bash' | cut -d' ' -f2-`
+  tmpout=`mktemp /tmp/mc.XXXXXXXX`
+  metacon -s $@ | tee $tmpout | grep -v '^:bash'  # Run & display results
+  eval `grep '^:bash' $tmpout | cut -d' ' -f2-`   # Process any bash commands
+  unlink $tmpout
 }
