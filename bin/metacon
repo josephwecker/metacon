@@ -11,7 +11,7 @@ if File.exists?(rvm_path)
   require 'shellwords'
   cmd = Shellwords.shellescape(
     File.join(File.dirname(Pathname.new(__FILE__).realpath.to_s), '.metacon_unwrapped'))
-  full_cmd = '/usr/bin/env bash -c \'source "$HOME/.rvm/scripts/rvm" && rvm ruby-1.9.2@metacon do ' + cmd + ' ' + ARGV.map{|a| Shellwords.shellescape(a)}.join(' ') + "'"
+  full_cmd = '/usr/bin/env bash -c \'source "$HOME/.rvm/scripts/rvm" && rvm ruby-1.9.3@metacon do ' + cmd + ' ' + ARGV.map{|a| Shellwords.shellescape(a)}.join(' ') + "'"
   exec full_cmd
 else
   $stderr.puts "RVM is required to run metacon. To finish installation of metacon please run metacon-installer"

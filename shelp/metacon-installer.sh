@@ -8,7 +8,7 @@
 
 set -e
 
-MCON_RUBY_V="ruby-1.9.2"
+MCON_RUBY_V="ruby-1.9.3"
 
 if [[ $EUID == 0 ]]; then
   echo "You are running this as a superuser. I recommend against that if possible." 1>&2
@@ -33,7 +33,8 @@ fi
 
 source "$HOME/.rvm/scripts/rvm"
 set +e
-[[ `rvm use $MCON_RUBY_V` == *Using* ]] || ( rvm install $MCON_RUBY_V && rvm use $MCON_RUBY_V ) || exit 3
+[[ `rvm use $MCON_RUBY_V` == *Using* ]] || \
+  ( rvm install $MCON_RUBY_V && rvm use $MCON_RUBY_V ) || exit 3
 rvm use $MCON_RUBY_V
 [[ `rvm use $MCON_RUBY_V; rvm gemset use metacon 2>&1` == *ERROR* ]] && ( ( rvm use $MCON_RUBY_V && rvm gemset create metacon && rvm gemset use metacon ) || exit 3 )
 rvm gemset use metacon
