@@ -26,6 +26,9 @@ if [[ ! `rvm version` ]]; then
 else
   echo "RVM found"
   INSTALLED_RVM=
+  source "$HOME/.rvm/scripts/rvm"
+  rvm get head
+  rvm reload
 fi
 
 source "$HOME/.rvm/scripts/rvm"
