@@ -54,16 +54,11 @@ module MetaCon
       return :impossible unless can_switch?
       changed = false
       @state.atomic do |s|
-        changes.each do |key, val|
-          s[key] = val unless s[key] == val
-        end
+        changes.each{|key, val| s[key]=val unless s[key]==val }
         changed = s.dirty
       end
-      if changed
-        return setup_context(opts)
-      else
-        return :nochange
-      end
+      if changed then return setup_context(opts)
+      else return :nochange end
     end
 
     def can_switch?
