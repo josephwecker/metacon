@@ -7,6 +7,8 @@ module MetaCon
       def self.load_dependency(dependency_parts, state, proj, opts)
         kind = dependency_parts.shift
         if kind == 'ruby'
+          # TODO: check for and install rvm for when this is used outside of
+          # the main installed command context.
           ruby = fix_ruby_version(dependency_parts)
           return switch_ruby(ruby, state, opts)
         elsif kind == 'gem'

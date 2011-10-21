@@ -1,3 +1,5 @@
+# TODO: Move this all into command.rb + project.rb
+
 module MetaCon
   class Stat
     def self.handle(cmd, clo, opts)
@@ -25,5 +27,6 @@ module MetaCon
         opts.each{|o| puts state[o.to_sym]}
       end
     end
+
   end
 end

@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 # TODO: make sure not to show role in prompt if no role differentiation is used.
+# TODO: change name to mvm
+# TODO: put rvm and pythonbrew "source" lines here in case they weren't
+#       installed beforehand so there's only one line to add to the user's
+#       bashrc etc.
 
 mcon(){
   # Essentially just let metacon do its thing but then do in the current

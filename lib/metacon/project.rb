@@ -73,6 +73,20 @@ module MetaCon
       return st
     end
 
+    def full_context
+      res = {}
+      # git branch
+      # runtime context
+      # role
+      # os
+      # machine
+      # root location
+      # pwd relative to root
+      res[:root_dir] = @root_dir
+      res[:git_branch] = `cd "#{@root_dir}" && __git_psq "%s"`
+      # TODO: finish & return
+    end
+
     def list(to_list)
       return nil unless @valid
       cs = current_state

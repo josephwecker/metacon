@@ -1,3 +1,6 @@
+# TODO: change result message - curr but with changed part in color and that's
+# it. green if successful switch and yellow if partially successful.
+
 module MetaCon
   class Switch
     def self.handle(cmd, clo, opts)
