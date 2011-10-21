@@ -52,6 +52,6 @@ YARD::Rake::YardocTask.new
 
 desc 'For testing binaries in development'
 task :local_bin do
-  sh 'rm /usr/local/bin/metacon'
-  sh "ln -s #{File.dirname(File.realdirpath(__FILE__))}/bin/metacon /usr/local/bin/metacon"
+  sh 'rm -f /usr/local/bin/metacon'
+  sh "ln -s #{File.dirname(File.expand_path(__FILE__))}/bin/metacon /usr/local/bin/metacon"
 end
