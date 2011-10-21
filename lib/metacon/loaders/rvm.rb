@@ -77,7 +77,8 @@ module MetaCon
         #       * Prepend full string w/ 'bash: ' so that it gets evalled in the
         #         current context.
         #       * Enjoy!
-        identstr = `#{RVMS} rvm '#{ruby}'@'#{gemset}' do rvm tools identifier`
+        o,e,s = shc("rvm '#{ruby}'@'#{gemset}' do rvm tools identifier", false)
+        identstr = o.strip
         envsettings = "~/.rvm/environments/#{identstr}"
         cmds = process_env_commands(IO.readlines(File.expand_path(envsettings)))
         puts cmds.join("\n") if opts[:shell]
