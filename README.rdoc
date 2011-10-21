@@ -13,7 +13,7 @@ Prerequisites:
 
 The overall tool can be installed as follows:
 
-  $   bash < <(curl -s https://raw.github.com/josephwecker/metacon/master/shelp/metacon-installer.sh )
+  $   curl -sL http://bit.ly/metacon-inst -o /tmp/mi.sh && bash /tmp/mi.sh
 
 The library can be used from within a project with a separate:
 
