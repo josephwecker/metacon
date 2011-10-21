@@ -9,7 +9,7 @@ module MetaCon
 
     def self.stat(opts, clo)
       puts '(not yet implemented)'
-      puts curr(opts)
+      puts curr(opts, nil, clo)
     end
 
     def self.curr(opts=[], proj=nil, clo)
