@@ -8,8 +8,8 @@ running/supervising, branching, aggregating, etc.)
 == Install
 
 Prerequisites:
-  * git
-  * curl
+* git
+* curl
 
 The overall tool can be installed as follows:
 
