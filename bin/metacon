@@ -5,11 +5,12 @@
 # TODO: Not finding .metacon_unwrapped properly when symlinked! (true-absolute __FILE__ before dirname etc.)
 # TODO: Make sure full environment is set up- not just rvm installed
 #
-
+require 'pathname'
 rvm_path = File.expand_path("~/.rvm/scripts/rvm")
 if File.exists?(rvm_path)
   require 'shellwords'
-  cmd = Shellwords.shellescape(File.join(File.dirname(File.realdirpath(__FILE__)), '.metacon_unwrapped'))
+  cmd = Shellwords.shellescape(
+    File.join(File.dirname(Pathname.new(__FILE__).realpath.to_s), '.metacon_unwrapped'))
   full_cmd = '. "$HOME/.rvm/scripts/rvm" && rvm ruby-1.9.2@metacon exec ' + cmd + ' ' + ARGV.map{|a| Shellwords.shellescape(a)}.join(' ')
   exec full_cmd
 else
