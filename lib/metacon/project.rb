@@ -93,6 +93,13 @@ module MetaCon
     def refresh_conf; @config = Config.new(@root_dir) end
 
     def setup_context(opts)
+      # TODO: if there is no ruby or python dependency, switch them to some
+      # "neutral"/default version + packages so the user doesn't accidentally
+      # pollute an env-specific gemset etc.
+      # TODO: read in all the dependencies first to calculate
+      # interdependencies. For example, make sure that the ruby version is
+      # switched before any gems are installed, etc. This'll have to be
+      # abstracted somehow for the add-on libraries.
       dependencies = self.conf['dependencies']
       incomplete = false
       emitted = {}
