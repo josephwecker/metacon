@@ -38,6 +38,25 @@ module MetaCon
             :bg_white  =>"\e[47m",   :"="       =>"\e[44;1;37m", :"=="      =>"\e[4;1;37m",
             :"==="     =>"\e[1;34m"}
 
+    ANSI = Hash[%w[reset bright _faint _italic underline _slowblink _fastblink
+                   negative _conceal _crossedout font0 _font1 _font2 _font3
+                   _font4 _font5 _font6 _font7 _font8 _font9 _fraktur
+                   _bright_off normal _italic_off underline_off _blink_off
+                   _reserved negative_off _conceal_off _crossedout_off fg_black
+                   fg_red fg_green fg_yellow fg_blue fg_magenta fg_cyan fg_white
+                   fg_256 fg_default bg_black bg_red bg_green bg_yellow bg_blue
+                   bg_magenta bg_cyan bg_white bg_256 bg_default _reserved2
+                   _frame _encircle _overline _frame_off
+                   _overline_off].each_with_index.map{|k,i| [k, i.to_s]}]
+
+    def cstr2(str)
+      str.gsub(/<\|([^>]+)>/) do
+        ctrl = $1.split(/\s*\|\s*/).compact
+        ctrl = ctrl.map{|k| ANSI[k]}.join(';')
+        "\e[#{ctrl}m"
+      end
+    end
+
     def color_puts(str, emit=true)
       begin
         r = false

@@ -93,7 +93,7 @@ module MetaCon
         when git_codes.include?('<>'); :diverged
         when git_codes.include?('<'); :behind
         when git_codes.include?('>'); :ahead
-        else :unknown
+        else :same
         end
       res[:git_has_stashed] = git_codes.include?('$')
       res[:git_has_unstaged] = git_codes.include?('*')
@@ -117,21 +117,43 @@ module MetaCon
 
     def ps1(color=true)
       fc = full_context
-      #out  = "|{normal {" + fc[:name] + "}"
-      # yellow, red, green, blue
-      # master (underline), (allcaps)
-      # changed
-      #mode_type = fc[:git_branch] == 'master' ? '4' : '0'
-      #yellow
-      #git_color =
-      #  case
-      #  when 
-      #out += "||{
-      statline = [:name, :git_branch, :role, :runtime_context]
-      statline << :machine if fc[:machine] != this_host
-      statline << :os if fc[:os] != this_os
-      statline = statline.map{|k| fc[k]}
-      out = "{#{statline.join('|')}}/#{fc[:pwd_from_root]}:$"
+
+      #---- project-name
+      parts = [fc[:name]]
+
+      #---- git-branch
+      style = []
+      style << 'underline' if fc[:git_branch] == 'master'
+      style << ({:diverged => 'fg_blue',
+                    :behind   => 'fg_yellow',
+                    :ahead    => 'fg_green'}[fc[:git_upstream]] || 'fg_default')
+      gitbr =  "<|reset|#{style.join('|')}>#{fc[:git_branch]}<|reset|>"
+      # yes, these are actually orthoganal, but this precedence makes more
+      # sense for the UI.
+      if fc[:git_has_unstaged]   then gitbr << '<|bright>*<|reset>'
+      elsif fc[:git_has_staged]  then gitbr << '<|bright>+<|reset>'
+      elsif fc[:git_has_stashed] then gitbr << '<|bright>$<|reset>' end
+      parts << gitbr
+
+      #---- runtime-context
+      r = fc[:runtime_context]
+      style = []
+      style << 'fg_red' if r[/^prod|hot/i]
+      style << 'bright' if r[/^prod|hot/i]
+      style << 'fg_green' if r[/^dev/i]
+      style << 'fg_yellow' if r[/test/i]
+      style << 'fg_cyan' if r[/staging|deploy/i]
+      parts << "<|reset|#{style.join('|')}>#{r}<|reset|>"
+
+      #---- the rest
+      parts << (fc[:role] == 'main' ? '~' : "<|reset>#{fc[:role]}")
+      parts << (fc[:os] == this_os ?  '~' : "<|reset>#{fc[:os]}")
+      parts << (fc[:machine] == this_host ?  '~' : "<|reset>#{fc[:machine]}")
+
+
+      line = "<|reset|bright|fg_black>(<|reset>#{parts.join('<|bright|fg_black>/')}<|bright|fg_black>)<|reset>/#{fc[:pwd_from_root]}<|bright|fg_black>-><|reset> "
+
+      return MetaCon::CLIHelpers.cstr2(line)
     end
 
     def list(to_list)
