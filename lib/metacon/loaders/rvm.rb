@@ -1,8 +1,7 @@
 module MetaCon
   module Loaders
     class RVM
-      require 'metacon/loaders/helpers'
-      include MetaCon::Loaders::Helpers
+      include MetaCon::Shorthand
       include MetaCon::CLIHelpers
       def self.load_dependency(dependency_parts, state, proj, opts)
         kind = dependency_parts.shift

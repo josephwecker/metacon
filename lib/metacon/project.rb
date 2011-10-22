@@ -3,6 +3,7 @@ module MetaCon
     require 'metacon/config'
     require 'metacon/loaders/index'
     include MetaCon::Loaders::Index
+    include MetaCon::Shorthand
     attr_accessor :mc_dir, :rel_dir, :root_dir, :valid
     def self.initialized?(relative_to='./')
       ! find_mc_dir(relative_to).nil?
@@ -75,16 +76,49 @@ module MetaCon
 
     def full_context
       res = {}
-      # git branch
-      # runtime context
-      # role
-      # os
-      # machine
-      # root location
-      # pwd relative to root
       res[:root_dir] = @root_dir
-      res[:git_branch] = `cd "#{@root_dir}" && __git_psq "%s"`
-      # TODO: finish & return
+      o,e,s = shcmd(["cd \"#{@root_dir}\"",
+                     "source '#{MetaCon::shelp_dir}/git-completion.bash'",
+                     "export GIT_PS1_SHOWUPSTREAM=\"auto\"",
+                     "export GIT_PS1_SHOWDIRTYSTATE=1",
+                     "export GIT_PS1_SHOWUNTRACKEDFILES=1",
+                     "export GIT_PS1_SHOWSTASHSTATE=1",
+                     "__git_ps1 \"%s\""].join(' && '), false)
+      git_br = o.strip.split(/\s+/)
+      git_codes = git_br.pop
+      git_brname = git_br.join(' ')
+      res[:git_branch] = git_brname
+      res[:git_upstream] =
+        case
+        when git_codes.include?('<>'); :diverged
+        when git_codes.include?('<'); :behind
+        when git_codes.include?('>'); :ahead
+        else :unknown
+        end
+      res[:git_has_stashed] = git_codes.include?('$')
+      res[:git_has_unstaged] = git_codes.include?('*')
+      res[:git_has_staged] = git_codes.include?('+')
+      res[:git_has_changes] = res[:git_has_staged] || res[:git_has_unstaged]
+      pwd = File.expand_path(Dir.pwd)
+      res[:pwd_from_root] = relative_path(@root_dir,pwd)
+      cs = current_state
+      res[:runtime_context] = cs[:rtc]
+      res[:role] = cs[:role]
+      res[:os] = cs[:os]
+      res[:machine] = cs[:host]
+      res[:name] = res[:root_dir].split('/').last.strip
+      res[:metadir] = "{#{res[:name]}}/#{res[:pwd_from_root]}"
+      res[:user] = `whoami`.strip
+      return res
+    end
+
+    def summary_str
+      fc = full_context
+      statline = [:name, :git_branch, :role, :runtime_context]
+      statline << :machine if fc[:machine] != this_host
+      statline << :os if fc[:os] != this_os
+      statline = statline.map{|k| fc[k]}
+      out = "{#{statline.join('|')}}/#{fc[:pwd_from_root]}:$"
     end
 
     def list(to_list)

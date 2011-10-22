@@ -10,8 +10,16 @@ module MetaCon
     end
 
     def self.stat(opts, clo)
+      # TODO:
+      #   - git-stat summary
+      #   - stuff from full_context
+      #   - stat for each loader
       puts '(not yet implemented)'
-      puts curr(opts, nil, clo)
+      #puts curr(opts, nil, clo)
+      require 'pp'
+      pp $proj.full_context
+      puts ''
+      puts $proj.summary_str
     end
 
     def self.curr(opts=[], proj=nil, clo)

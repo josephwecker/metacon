@@ -1,6 +1,5 @@
 module MetaCon
-  module Loaders
-    module Helpers
+    module Shorthand
       def included(by); by.extend(self) end
       def shcmd(cmd_string, echo=true)
         require 'open3'
@@ -37,7 +36,28 @@ module MetaCon
         end
         return [main_out, err_out, exit_status]
       end
-      extend self
-    end
+
+      # Make a path relative (relative to the initial path)
+      def relative_path(initial,dest)
+        dest = File.expand_path(dest).split('/')
+        initial = File.expand_path(initial)
+        initial = File.dirname(initial) unless File.directory?(initial)
+        initial = initial.split('/')
+        pref,a,b = common_prefix(dest,initial)
+        return (b.map{|d|'..'} + a).join('/')
+      end
+
+      # Take two arrays and return an array holding the common prefix and then
+      # the remainder for each of the originals.
+      def common_prefix(a,b)
+        res = []
+        (0..[a.size,b.size].max).each do |i|
+          if a[i] == b[i]; res << a[i]
+          else break end
+        end
+        return [res, a[res.size..-1] || [], b[res.size..-1] || []]
+      end
+
+    extend self
   end
 end
