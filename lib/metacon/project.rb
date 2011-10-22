@@ -151,7 +151,7 @@ module MetaCon
       parts << (fc[:machine] == this_host ?  '~' : "<|reset>#{fc[:machine]}")
 
 
-      line = "<|reset|bright|fg_black>(<|reset>#{parts.join('<|bright|fg_black>/')}<|bright|fg_black>)<|reset>/#{fc[:pwd_from_root]}<|bright|fg_black>-><|reset> "
+      line = "<|reset|bright|fg_black>(<|reset|underline>#{parts.join('<|reset|bright|fg_black>/')}<|bright|fg_black>)<|reset>/#{fc[:pwd_from_root]}<|bright|fg_black>-><|reset> "
 
       return MetaCon::CLIHelpers.cstr2(line)
     end
