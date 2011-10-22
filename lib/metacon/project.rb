@@ -113,7 +113,20 @@ module MetaCon
     end
 
     def summary_str
+    end
+
+    def ps1(color=true)
       fc = full_context
+      #out  = "|{normal {" + fc[:name] + "}"
+      # yellow, red, green, blue
+      # master (underline), (allcaps)
+      # changed
+      #mode_type = fc[:git_branch] == 'master' ? '4' : '0'
+      #yellow
+      #git_color =
+      #  case
+      #  when 
+      #out += "||{
       statline = [:name, :git_branch, :role, :runtime_context]
       statline << :machine if fc[:machine] != this_host
       statline << :os if fc[:os] != this_os
