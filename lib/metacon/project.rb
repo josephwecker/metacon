@@ -183,7 +183,7 @@ module MetaCon
       # interdependencies. For example, make sure that the ruby version is
       # switched before any gems are installed, etc. This'll have to be
       # abstracted somehow for the add-on libraries.
-      dependencies = self.conf['dependencies']
+      dependencies = self.conf['dependencies'] || []
       incomplete = false
       emitted = {}
       dependencies.each do |dep|
