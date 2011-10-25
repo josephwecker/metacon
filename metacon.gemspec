@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = "metacon"
-  s.version = "0.2.4"
+  s.version = "0.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Joseph Wecker"]
@@ -72,7 +72,7 @@ Gem::Specification.new do |s|
   s.post_install_message = "\n\n\e[1;32m\e[40m--- You may need to run \e[1;37mmetacon-installer\e[1;32m to check dependencies & finish the installation --- \e[0m\n\n"
   s.require_paths = ["lib"]
   s.requirements = ["git, v1.7.4.1 or greater", "rvm, v1.8.2 or greater", "pythonbrew, v1.1 or greater"]
-  s.rubygems_version = "1.8.10"
+  s.rubygems_version = "1.8.11"
   s.summary = "Metacontroller for organizing aggregate projects"
 
   if s.respond_to? :specification_version then
