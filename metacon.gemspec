@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "metacon"
-  s.version = "0.2.2"
+  s.version = "0.2.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Joseph Wecker"]
-  s.date = "2011-10-21"
+  s.date = "2011-10-25"
   s.description = "Tool with some similarities to puppet but specializing in fast development iteration and continuous deployment. Specifically initially for use with justin.tv / twitch.tv project clusters."
   s.email = "jwecker@justin.tv"
   s.executables = [".metacon_unwrapped", "metacon-installer", "metacon"]
@@ -50,16 +50,18 @@ Gem::Specification.new do |s|
     "lib/metacon/command.rb",
     "lib/metacon/config.rb",
     "lib/metacon/init.rb",
-    "lib/metacon/loaders/helpers.rb",
     "lib/metacon/loaders/index.rb",
+    "lib/metacon/loaders/python_brew.rb",
     "lib/metacon/loaders/rvm.rb",
     "lib/metacon/project.rb",
     "lib/metacon/self_install.rb",
+    "lib/metacon/shorthand.rb",
     "lib/metacon/stat.rb",
     "lib/metacon/switch.rb",
     "metacon.gemspec",
     "notes-dependency-tool.md",
     "notes.rdoc",
+    "shelp/git-completion.bash",
     "shelp/metacon-installer.sh",
     "shelp/metacon.bashrc",
     "test/helper.rb",
