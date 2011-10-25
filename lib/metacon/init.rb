@@ -28,7 +28,7 @@ module MetaCon
 
       init_role = mcp.list(:role)[0] || 'main'
       init_rtc  = mcp.list(:rtc)[0] || 'dev'
-      switch_res = mcp.switch(true, {:role => init_role, :rtc => init_rtc})
+      switch_res = mcp.switch({:role => init_role, :rtc => init_rtc}, clo)
       if switch_res == :impossible
         $cli.cfail 'Cannot initialize the metacontext- submodules need to have files committed.'
         exit 4
