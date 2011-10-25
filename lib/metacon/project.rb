@@ -113,47 +113,8 @@ module MetaCon
     end
 
     def summary_str
-    end
-
-    def ps1(color=true)
-      fc = full_context
-
-      #---- project-name
-      parts = [fc[:name]]
-
-      #---- git-branch
-      style = []
-      style << 'underline' if fc[:git_branch] == 'master'
-      style << ({:diverged => 'fg_blue',
-                    :behind   => 'fg_yellow',
-                    :ahead    => 'fg_green'}[fc[:git_upstream]] || 'fg_default')
-      gitbr =  "<|reset|#{style.join('|')}>#{fc[:git_branch]}<|reset|>"
-      # yes, these are actually orthoganal, but this precedence makes more
-      # sense for the UI.
-      if fc[:git_has_unstaged]   then gitbr << '<|bright>*<|reset>'
-      elsif fc[:git_has_staged]  then gitbr << '<|bright>+<|reset>'
-      elsif fc[:git_has_stashed] then gitbr << '<|bright>$<|reset>' end
-      parts << gitbr
-
-      #---- runtime-context
-      r = fc[:runtime_context]
-      style = []
-      style << 'fg_red' if r[/^prod|hot/i]
-      style << 'bright' if r[/^prod|hot/i]
-      style << 'fg_green' if r[/^dev/i]
-      style << 'fg_yellow' if r[/test/i]
-      style << 'fg_cyan' if r[/staging|deploy/i]
-      parts << "<|reset|#{style.join('|')}>#{r}<|reset|>"
-
-      #---- the rest
-      parts << (fc[:role] == 'main' ? '~' : "<|reset>#{fc[:role]}")
-      parts << (fc[:os] == this_os ?  '~' : "<|reset>#{fc[:os]}")
-      parts << (fc[:machine] == this_host ?  '~' : "<|reset>#{fc[:machine]}")
-
-
-      line = "<|reset|bright|fg_black>(<|reset|underline>#{parts.join('<|reset|bright|fg_black>/')}<|bright|fg_black>)<|reset>/#{fc[:pwd_from_root]}<|bright|fg_black>-><|reset> "
-
-      return MetaCon::CLIHelpers.cstr2(line)
+      # TODO: for last line emitted in most commands and even used for to_s
+      # possibly?
     end
 
     def list(to_list)

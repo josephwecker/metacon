@@ -13,4 +13,7 @@ mvm(){
   unlink $tmpout
 }
 
-
+metacon_ps1(){
+  [ -v "$ORIG_PS1" ] || export ORIG_PS1="$PS1"
+  export PROMPT_COMMAND='export PS1="$( metacon ps1 )"'
+}

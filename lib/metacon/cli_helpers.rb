@@ -49,11 +49,16 @@ module MetaCon
                    _frame _encircle _overline _frame_off
                    _overline_off].each_with_index.map{|k,i| [k, i.to_s]}]
 
-    def cstr2(str)
-      str.gsub(/<\|([^>]+)>/) do
-        ctrl = $1.split(/\s*\|\s*/).compact
-        ctrl = ctrl.map{|k| ANSI[k]}.join(';')
-        "\e[#{ctrl}m"
+    def cstr2(str, for_ps1=true)
+      fmtres = str.gsub(/(<\|[^>]+>)+/) do
+        parts = $1
+        cmdseq = parts.gsub(/<\|([^>]+)>/) do
+          ctrl = $1.split(/\s*\|\s*/).compact
+          ctrl = ctrl.map{|k| ANSI[k]}.join(';')
+          "\e[#{ctrl}m"
+        end
+        if for_ps1 then '\\[' + cmdseq + '\\]'
+        else cmdseq end
       end
     end
 

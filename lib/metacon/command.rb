@@ -41,7 +41,10 @@ module MetaCon
 
       :conf =>       :conf,
       :config =>     :conf,
-      :configuration=> :conf
+      :configuration=> :conf,
+
+      :prompt =>     :ps1,
+      :ps1 =>        :ps1
     }
     COMMANDS = [[:init, {:args => ['[DIRECTORY]'],
                           :desc => 'Init metacon project dir, default ./, create if necessary',
@@ -66,6 +69,9 @@ module MetaCon
                          :handler => MetaCon::Switch}],
                 [:conf, {:args => ['[FAMILY]'],
                          :desc => 'Output the currently applicable configuration',
+                         :handler => MetaCon::Command}],
+                [:ps1,  {:args => [],
+                         :desc => 'Emit value appropriate for ps1 prompt',
                          :handler => MetaCon::Command}] ]
     def self.run
       banner = "metacon\n"+
@@ -112,9 +118,10 @@ module MetaCon
 
       $cli = HighLine.new
       $cli.extend(MetaCon::CLIHelpers)
-      unless command == :init
+      $proj = nil
+      unless [:init].include?(command)
         $proj = MetaCon::Project.new('./', options[:verbose])
-        unless $proj.valid
+        unless $proj.valid || (command == :ps1)
           $cli.cfail 'Not a metacon project. Use `metacon init`'
           exit 5
         end
@@ -129,7 +136,51 @@ module MetaCon
         conf = $proj.conf
         conf = Hash[opts.map{|fam| [fam, conf[fam]]}] if opts.size > 0
         puts conf.to_yaml
+      elsif cmd == :ps1
+        puts ps1
       end
+    end
+
+    def self.ps1(color=true)
+      return `echo -n $ORIG_PS1` unless $proj.valid
+      fc = $proj.full_context
+
+      #---- project-name
+      parts = [fc[:name]]
+
+      #---- git-branch
+      style = []
+      style << 'underline' if fc[:git_branch] == 'master'
+      style << ({:diverged => 'fg_blue',
+                    :behind   => 'fg_yellow',
+                    :ahead    => 'fg_green'}[fc[:git_upstream]] || 'fg_default')
+      gitbr =  "<|reset|#{style.join('|')}>#{fc[:git_branch]}<|reset|>"
+      # yes, these are actually orthoganal, but this precedence makes more
+      # sense for the UI.
+      if fc[:git_has_unstaged]   then gitbr << '<|bright>*<|reset>'
+      elsif fc[:git_has_staged]  then gitbr << '<|bright>+<|reset>'
+      elsif fc[:git_has_stashed] then gitbr << '<|bright>$<|reset>' end
+      parts << gitbr
+
+      #---- runtime-context
+      r = fc[:runtime_context]
+      style = []
+      style << 'fg_red' if r[/^prod|hot/i]
+      style << 'bright' if r[/^prod|hot/i]
+      style << 'fg_green' if r[/^dev/i]
+      style << 'fg_yellow' if r[/test/i]
+      style << 'fg_cyan' if r[/staging|deploy/i]
+      parts << "<|reset|#{style.join('|')}>#{r}<|reset|>"
+
+      #---- the rest
+      parts << (fc[:role] == 'main' ? '~' : "<|reset>#{fc[:role]}")
+      parts << (fc[:os] == $proj.this_os ?  '~' : "<|reset>#{fc[:os]}")
+      parts << (fc[:machine] == $proj.this_host ?  '~' : "<|reset>#{fc[:machine]}")
+
+
+      line = "<|reset|bright|fg_black>(<|reset|underline>#{parts.join('<|reset|bright|fg_black>/')}<|bright|fg_black>)<|reset>/#{fc[:pwd_from_root]}<|bright|fg_black>-><|reset> "
+
+      return MetaCon::CLIHelpers.cstr2(line)
     end
   end
 end

@@ -18,8 +18,6 @@ module MetaCon
       #puts curr(opts, nil, clo)
       require 'pp'
       pp $proj.full_context
-      puts ''
-      puts $proj.ps1
     end
 
     def self.curr(opts=[], proj=nil, clo)
