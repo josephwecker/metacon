@@ -142,7 +142,7 @@ module MetaCon
     end
 
     def self.ps1(color=true)
-      return `echo -n $ORIG_PS1` unless $proj.valid
+      return `echo "$ORIG_PS1"` unless $proj.valid
       fc = $proj.full_context
 
       #---- project-name
