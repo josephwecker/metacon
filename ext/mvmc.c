@@ -14,7 +14,7 @@
 char root_dir[PATHSIZE];
 
 void usage() {
-    printf("Not really usable at all at the moment\n");
+    printf("USAGE: Not really usable yet\n");
 }
 
 void error(const char* msg, ...) {
@@ -62,6 +62,25 @@ int main(int argc, char *argv[]) {
         usage();
         return 1;
     }
+
+    /* --Commands--
+     * [very, very fast]
+     * help
+     * curr
+     * ps1
+     * conf
+     * * - anything else and it triggers it under current context
+     *
+     * [fast]
+     * refresh (to ensure dependencies etc. without switching)
+     * stat
+     * branch  (current/list/set)(via git of course)
+     * role    (current/list/set)
+     * ctx     (current/list/set)(rtc...)
+     * os      (current/list/(set?))
+     * host    (current/list/(set?))
+     *
+     */
 
     if(streq(argv[1], "help")) {
         usage(); return 0;
